@@ -1,11 +1,18 @@
 var router = require("express").Router();
+var bodyParser = require('body-parser')
+
 const authHandler = require("../utilities/authUtilities");
+
+// create application/json parser
+var jsonParser = bodyParser.json()
 
 // Sign IN and Sign Up routes
 const signInHandler = require("../userUtilities/signInUtilities.js");
 const signUpHandler = require("../userUtilities/signUpUtilities.js");
 router.post("/signin",(req, res) => {signInHandler(req,res)});
-router.post("/signup",(req, res) => {signUpHandler(req,res)});
+
+router.post("/signup",jsonParser,(req, res) => {signUpHandler.create(req,res)});
+
 
 
 // Email routes
