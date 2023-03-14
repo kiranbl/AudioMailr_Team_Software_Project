@@ -1,31 +1,37 @@
 var jwt = require('jsonwebtoken');
 
+var authenticationErrorCode = (statusCode)=>{
+  switch (statusCode){
+      case 4000: return ({"errorcode":statusCode,"message": "JWT Generation Failed"});
+      case 4001: return ({"errorcode":statusCode,"message": "Invalid JWT"});
+      case 4002: return ({"errorcode":statusCode,"message": "Invalid Password, Should be minimum 8 character"});
+  }
+}
+
 
 var generateJWT = async (data)=>{
 try{
-    var privateKey = "AUDIOMAILR123123123"
-    jwt.sign(data, privateKey, { algorithm: 'RS256' }, (err, token) =>{
-        if(err) throw err;
-            return token;
-        });
+    var privateKey = "$$$$$$AUDIOMAILR123123123$$$$$$"
+    var token = jwt.sign(data, privateKey);
+    return token;
 }
 catch(err){
-    return(err)
+    console.log("JWT Error",err);
+    return(authenticationErrorCode(4000))
 }
    
 }
 
 var verifyJWT = async (token)=>{
     try{
-        var privateKey = "AUDIOMAILR123123123"
-        jwt.verify(token, privateKey, (err, decoded) =>{
-            if(err) throw err;
-            return (decoded);
-          });
-    }
+        var privateKey = "$$$$$$AUDIOMAILR123123123$$$$$$"
+        var decodedData = jwt.verify(token, privateKey);
+        return decodedData;
+      }
     catch(err){
-        console.log("JWTVerifyError ===>>>",err)
-        return({"statusCode":403,"message":"Forbidden route"});
+
+      console.log("JWTVerifyError",err);
+      return(authenticationErrorCode(4001));
     }
        
     }
@@ -46,10 +52,11 @@ var authHandler = async (req,res,next)=>{
       req.token = bearerToken;
       // Next middleware
       var data = await verifyJWT(req.token);
-      if(data.statusCode){
+      if(data.errorcode){
         res.json(data);
       }
       else{
+        res.decodedData(data);
         next();
       }
 
