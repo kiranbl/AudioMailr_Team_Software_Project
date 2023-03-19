@@ -23,6 +23,7 @@ var queryBuilder = (queryType,data)=>{
     if(queryType === "select"){
 
         var dataArray = Object.keys(data.conditionData);
+        var conditionType = data.conditionType? data.conditionType:"AND";
         var selectionQuery = "";
         var conditionQuery="";
         if(data.selectionData){
@@ -42,12 +43,12 @@ var queryBuilder = (queryType,data)=>{
                 if(i === dataArray.length-1){
                     conditionQuery = conditionQuery + `${dataArray[i]} = "${data.conditionData[dataArray[i]]}"`
                 }else{
-                    conditionQuery = conditionQuery + `${dataArray[i]} = "${data.conditionData[dataArray[i]]}" AND `
+                    conditionQuery = conditionQuery + `(${dataArray[i]} = "${data.conditionData[dataArray[i]]}" ${conditionType} `
                 }
             }
         }
         else{
-            conditionQuery = conditionQuery + `${dataArray[i]} = "${data.conditionData[dataArray[i]]}"`
+            conditionQuery = conditionQuery + `(${dataArray[0]} = "${data.conditionData[dataArray[0]]}"`
         }
       
         
