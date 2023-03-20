@@ -33,8 +33,29 @@ var signUpValidator = (body)=>{
     }
 
 }
-   
+  
+
+var signInValidator = (body)=>{
+
+    var rules = {
+        emailAddress1: 'required|email',
+        password1: 'required|min:8'
+      };
+
+    var validation = new Validator(body, rules);
+    if (validation.fails()) {
+    if(validation.errors.first('emailAddress1')){
+        return(validationErrorCode(1001))
+    }
+    if(validation.errors.first('password1')){
+        return(validationErrorCode(1002))
+    }
+
+    }
+
+}
 
 module.exports ={
-    signUpValidator
+    signUpValidator,
+    signInValidator
 }

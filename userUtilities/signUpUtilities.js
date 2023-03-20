@@ -9,7 +9,7 @@ var signUpErrorCode = (statusCode,type) => {
     case 2000:
       return { errorcode: statusCode, message: "User Creation Failed" };
     case 2001:
-      return { errorcode: statusCode, message: `${type}Already Exists` };
+      return { errorcode: statusCode, message: `${type} Already Exists` };
   }
 };
 
@@ -18,7 +18,7 @@ var userCreate = async (user) => {
     //Code to check if the user already exist
     var data = {
       conditionData: {
-        emailAddress2: [user.emailAddress2],
+        emailAddress2: [user.emailAddress1],
         emailAddress1: [user.emailAddress1]
       },
       conditionType: 'OR',
@@ -69,7 +69,7 @@ var userCreate = async (user) => {
       user = {
         userName: user.userName,
         emailAddress1: user.emailAddress1,
-        password1: passwordHash,
+        password1: user.password1,
       };
       var token = await authUtilities.generateJWT(user);
       console.log(token);

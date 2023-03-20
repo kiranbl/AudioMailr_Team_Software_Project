@@ -3,7 +3,7 @@ var mysql = require('mysql2');
 var pool  = mysql.createPool({
   host            : 'localhost',
   user            : 'root',
-  password        : 'Leyan_2002',
+  password        : 'Kiran123$',
   database        : 'AudioMailr',
   waitForConnections: true,
   connectionLimit: 10,

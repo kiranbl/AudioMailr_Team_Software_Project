@@ -7,7 +7,7 @@ var encrypt = (data) => {
 };
 
 var validate = (storedHash,providedHash) => {
-    return bcrypt.compareSync(storedHash, providedHash);
+    return bcrypt.compareSync(providedHash,storedHash);
 };
 
 module.exports = {
