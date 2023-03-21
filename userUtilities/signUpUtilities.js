@@ -18,8 +18,8 @@ var userCreate = async (user) => {
     //Code to check if the user already exist
     var data = {
       conditionData: {
-        emailAddress2: [user.emailAddress1],
-        emailAddress1: [user.emailAddress1]
+        emailAddress2: user.emailAddress1,
+        emailAddress1: user.emailAddress1
       },
       conditionType: 'OR',
       selectionData: ["emailAddress1", "emailAddress2"],

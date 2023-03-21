@@ -17,8 +17,8 @@ var userSignIn = async (user) => {
     //Code to check if the user already exist
     var data = {
       conditionData: {
-        emailAddress2: [user.emailAddress1],
-        emailAddress1: [user.emailAddress1]
+        emailAddress2: user.emailAddress1,
+        emailAddress1: user.emailAddress1
       },
       conditionType: 'OR',
       selectionData: ["userName", "password1", "password2", "emailAddress1", "emailAddress2"],
