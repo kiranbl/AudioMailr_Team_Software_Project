@@ -19,7 +19,7 @@ const getMailHandler = require("../emailUtilities/getMailUtilities");
 const getAllMailHandler = require("../emailUtilities/getMailUtilities");
 router.get("/getallmail",(req, res) => authHandler(req,res,next),(req, res) => {getAllMailHandler(req,res)});
 router.get("/getmail",(req, res) => authHandler(req,res,next),(req, res) => {getMailHandler(req,res)});
-router.post("/sendmail",(req, res) => authHandler(req,res,next),(req, res) => {sendMailHandler(req,res)});
+router.post("/sendmail",(req, res,next) => authHandler.authHandler(req,res,next),(req, res) => {sendMailHandler(req,res)});
 
 
 
