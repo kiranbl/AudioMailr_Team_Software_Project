@@ -3,8 +3,9 @@ import axios from "../utils/request"
 // http request routes
 
 const base = {
-    baseUrl:"http://localhost:3001",
-    signup:"/signup"
+    baseUrl:"/api",
+    signup:"/api/signup",
+    signin:"/api/signin",
 
 }
 
@@ -20,16 +21,14 @@ const api = {
 
        
 
-    signup(params){
-     const headers ={
-        'Content-Type' : 'application/json; charset=UTF-8',
-        "Access-Control-Allow-Origin": "*",
-            }
-
-            return axios.post(base.baseUrl +base.signup, params)
-            .then( response => console.log(response));
-
-    }
+        signup(params) {
+            console.log(params);
+            return axios.post(base.baseUrl + base.signup, params );
+          },
+          
+        signin(params){
+            return axios.post(base.baseUrl + base.signin,params)
+        },
 }
 
 export default api;

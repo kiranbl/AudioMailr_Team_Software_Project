@@ -1,14 +1,16 @@
-/**
- * flash = {
- *  msg:"register success"
- *  id:1001
- * }
- */
+
 
 import findIndex from "lodash/findIndex"
 import { ADD_FLASH,DEL_FLASH } from "../constants"
 
 const flashState = []
+
+/**sample structure
+ * flash = {
+ *  msg:"sign uup success"
+ *  id:1001
+ * }
+ */
 
 const flash = (state = flashState,action) =>{
     switch(action.type){

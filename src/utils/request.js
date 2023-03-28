@@ -50,28 +50,28 @@ const instance = axios.create({
 
 instance.interceptors.request.use(
     config => {
-        if (config.method === "post") {
-            config.data = qs.stringify(config.data)
-        }
-       
-        if (store.getState().auth.user.token) {
-           
-            config.headers.Authorization = store.getState().auth.user.token;
-        }
-        return config
+      // block i don't need. these 2 lines caused the problem that data isn't been sent as json form.
+      // if (config.method === "post") {
+      //   config.data = qs.stringify(config.data);
+      // }
+  
+      if (store.getState().auth.user.token) {
+        config.headers.Authorization = store.getState().auth.user.token;
+      }
+      return config;
     },
     error => Promise.reject(error)
-)
+  );
 
 
-instance.interceptors.response.use(
-    
+  instance.interceptors.response.use(
     response => response.status === 200 ? Promise.resolve(response) : Promise.reject(response),
     error => {
         const { response } = error;
         errorHandle(response.status, response.info);
     }
 )
+
 
 
 export default instance
