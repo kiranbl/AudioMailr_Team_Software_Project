@@ -50,9 +50,20 @@ var queryBuilder = (queryType,data)=>{
         else{
             conditionQuery = conditionQuery + `(${dataArray[0]} = "${data.conditionData[dataArray[0]]}"`
         }
+
+        let orderQuery="";
+        if(data.orderCondition){
+            orderQuery = orderQuery+"ORDER BY " + `${data.orderCondition.orderby} ${data.orderCondition.condition}`;
+        }
+
+
+        let limitQuery="";
+        if(data.limitCondition){
+            limitQuery = limitQuery+"LIMIT " + `${data.limitConditon.startRoW}, ${data.limitCondition.count}`;
+        }
       
         
-        var query = `${selectionQuery} FROM ${data.tablename} WHERE ${conditionQuery})`;
+        var query = `${selectionQuery} FROM ${data.tablename} WHERE ${conditionQuery}) ${orderQuery} ${limitQuery}`;
         console.log("SELECT QUERY ===>>> ",query);
         return query;
     }

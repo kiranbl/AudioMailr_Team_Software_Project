@@ -3,6 +3,7 @@ const dbQueryUtilities = require("../utilities/dbQueryUtilities");
 const dbUtilities = require("../utilities/dbUtilities");
 const authUtilities = require("../utilities/authUtilities");
 const { encrypt } = require("../utilities/hashUtilities");
+const {googleAuthHandler} = require("./googleAuthUtilities");
 
 var signUpErrorCode = (statusCode,type) => {
   switch (statusCode) {
@@ -70,6 +71,8 @@ var userCreate = async (user) => {
         userName: user.userName,
         emailAddress1: user.emailAddress1,
         password1: user.password1,
+        user_id:queryResponse.insertId
+
       };
       var token = await authUtilities.generateJWT(user);
       console.log(token);
@@ -91,7 +94,12 @@ var signUpHandler = async (req, res) => {
       statusCode: 400,
       message: "Content can not be empty!",
     });
-  } else {
+  }else if(req.body.authtype === "google"){
+     return res.json(await googleAuthHandler());
+    
+  }else if(req.body.authtype === "yahoo"){}
+  else if(req.body.authtype === "outlook"){}
+   else {
     var validatorResponse = validator.signUpValidator(req.body);
     if (validatorResponse) {
       return res.json(validatorResponse);

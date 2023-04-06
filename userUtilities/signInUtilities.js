@@ -4,6 +4,8 @@ const dbUtilities = require("../utilities/dbUtilities");
 const authUtilities = require("../utilities/authUtilities");
 const { encrypt, validate} = require("../utilities/hashUtilities");
 
+const {googleAuthHandler} = require("./googleAuthUtilities");
+
 var signInErrorCode = (statusCode) => {
   switch (statusCode) {
     case 5000:return { errorcode: statusCode, message: "User Account Not Found, Please Sign Up Using This Mail and Try Again" };
@@ -21,7 +23,7 @@ var userSignIn = async (user) => {
         emailAddress1: user.emailAddress1
       },
       conditionType: 'OR',
-      selectionData: ["userName", "password1", "password2", "emailAddress1", "emailAddress2"],
+      selectionData: ["user_id","userName", "password1", "password2", "emailAddress1", "emailAddress2"],
       tablename: "user",
     };
 
@@ -41,6 +43,7 @@ var userSignIn = async (user) => {
     let passwordValidationResponse = validate(hashedpassword,user.password1);
     if(passwordValidationResponse){
     user = {
+        user_id: selectQueryResponse[0].user_id,
         userName: selectQueryResponse[0].userName,
         emailAddress1: emailaddress,
         password1: user.password1,
@@ -74,7 +77,13 @@ var signInHandler = async (req, res) => {
       statusCode: 400,
       message: "Content can not be empty!",
     });
-  } else {
+  }else if(req.body.authtype === "google"){
+    
+    return res.json(await googleAuthHandler());
+    
+  }else if(req.body.authtype === "yahoo"){}
+  else if(req.body.authtype === "outlook"){}
+  else {
     var validatorResponse = validator.signInValidator(req.body);
     if (validatorResponse) {
       return res.json(validatorResponse);

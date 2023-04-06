@@ -1,45 +1,45 @@
 const nodemailer = require("nodemailer");
-const smtpTransport=require("nodemailer-smtp-transport");
 const validator = require("../utilities/validationUtilities");
 const dbQueryUtilities = require("../utilities/dbQueryUtilities");
 const dbUtilities = require("../utilities/dbUtilities");
-const sgMail = require('@sendgrid/mail')
+const  { google } = require('googleapis');
+const MOMENT= require( 'moment' );
 
-sgMail.setApiKey("")
+var sendMailErrorCode = (statusCode,email) => {
+  switch (statusCode) {
+    case 6000:
+      return { errorcode: statusCode, message: `Mail has been sent to ${email} successfully..` };
+  }
+}; 
+const oauth2Client = new google.auth.OAuth2(
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URI
 
-
-
+);
 let sendEmail = async (data,emailTemplate) =>{
-    
     try{
-        const msg = {
-            to: 'kiran.pro13@gmail.com', // Change to your recipient
-            from: 'kiran.kicchu@gmail.com', // Change to your verified sender
-            subject: 'Sending with SendGrid is Fun',
-            text: 'and easy to do anywhere, even with Node.js',
-            html: '<strong>and easy to do anywhere, even with Node.js</strong>',
-          }
-          
-          let sendMail = await sgMail.send(msg);
-          console.log(":Send Mail Response --->>>> ",sendEmail)
-    }
-    catch(error){
-        console.log(error);
-    }
-   
+      console.log(data)
+      oauth2Client.setCredentials({
+        refresh_token: data.refreshToken
+   });
+   const accessToken = await oauth2Client.getAccessToken();
+   console.log("TOKEN ===>>>> ",accessToken);
+   console.log("clientid ===>>>> ",process.env.CLIENT_ID);
+   console.log("clientsecret ===>>>> ",process.env.CLIENT_SECRET);
+   console.log("ACCESSTOKEN ===>>>> ",accessToken.res.data.access_token);
+   console.log("REFRESHTOKEN ===>>>> ",accessToken.res.data.refresh_token);
       
-
-    let transporter = nodemailer.createTransport(smtpTransport({
-        service:"gmail",
+   let transporter = nodemailer.createTransport({
+        service:data.provider,
         auth: {
-          host: "smtp.gmail.com",
-          port:465,
-          secure:true,
-          user: "",
-          pass: "",
-        },
+          type: "OAuth2",
+          user: data.emailAddress1,
+          clientId: process.env.CLIENT_ID,
+          clientSecret:process.env.CLIENT_SECRET,
+          accessToken: accessToken.res.data.access_token
         }
-    ));
+      });
     transporter.verify(function(error, success) {
       if (error) {
         console.log(error);
@@ -49,40 +49,63 @@ let sendEmail = async (data,emailTemplate) =>{
     });
     
       let info = await transporter.sendMail({
-        from: 'audiomailr.team12@gmail.com', // sender address
-        to: "kiran.kicchu@gmail.com", // list of receivers
-        subject: "Hello ✔", // Subject line
-        text: "Hello world?", // plain text body
-        html: "<b>Hello world?</b>", // html body
+        from: data.emailAddress1, // sender address
+        to: emailTemplate.toAddress, // list of receivers
+        subject: emailTemplate.subject, // Subject line
+        text: emailTemplate.body, // plain text body
+        html:(emailTemplate.html)?emailTemplate.html:"", // html body
       });
-    
+      
+      emailTemplate["fromAddress"]= data.emailAddress1;
       console.log(info)
+      if(info){
+       emailTemplate["user_id"] = data.user_id;
+       emailTemplate["createdAt"] = MOMENT().format( 'YYYY-MM-DD  HH:mm:ss.000' );
 
+        let insertquery = `INSERT INTO sent `;
+        let insertqueryType = "insert";
+        let generatedQuery = dbQueryUtilities.queryBuilder(insertqueryType, emailTemplate);
+        insertquery = insertquery + generatedQuery;
+        var queryResponse = await dbUtilities.createQuery(insertquery);
+        console.log("Query res", queryResponse);
+        if(queryResponse.errorcode) return queryResponse
 
-    var smtpProtocol = nodemailer.createTransport({
-        host: "smtp.mail.yahoo.com",
-        port: 587,
-        secure: false,
-        auth: {
-          user: "",
-          pass: ""
+        return(sendMailErrorCode(6000,emailTemplate.toAddress));
       }
-  });
+    }
+    catch(error){
+      console.log(error)
+    }
+   
+      
+
+
+
+
+  //   var smtpProtocol = nodemailer.createTransport({
+  //       host: "smtp.mail.yahoo.com",
+  //       port: 587,
+  //       secure: false,
+  //       auth: {
+  //         user: "",
+  //         pass: ""
+  //     }
+  // });
   
-  var mailoption = {
-      from: "audiomailr@​yahoo.com",
-      to: "kiran.kicchu@gmail.com",
-      subject: "Test Mail",
-      html: 'Good Morning!'
-  }
+  // var mailoption = {
+  //     from: "audiomailr@​yahoo.com",
+  //     to: "kiran.kicchu@gmail.com",
+  //     subject: "Test Mail",
+  //     html: 'Good Morning!'
+  // }
   
-  smtpProtocol.sendMail(mailoption, function(err, response){
-      if(err) {
-          console.log(err);
-      } 
-      console.log('Message Sent' + response.message);
-      smtpProtocol.close();
-  });
+  // smtpProtocol.sendMail(mailoption, function(err, response){
+  //     if(err) {
+  //         console.log(err);
+  //     } 
+  //     console.log('Message Sent' + response.message);
+  //     smtpProtocol.close();
+  // });
 
 }
 
@@ -91,29 +114,29 @@ let sendEmail = async (data,emailTemplate) =>{
 
   let sendMailHandler = async (req,res)=>{
     console.log(req.decodedData)
-//     if (!req.body) {
-//         res.status(400).json({
-//           statusCode: 400,
-//           message: "Content can not be empty!",
-//         });
-//   }else {
-    // var validatorResponse = validator.emailValidator(req.body);
-    // if (validatorResponse) {
-    //   return res.json(validatorResponse);
-    // }
+    if (!req.body) {
+        res.status(400).json({
+          statusCode: 400,
+          message: "Content can not be empty!",
+        });
+  }else {
+    var validatorResponse = validator.emailValidator(req.body);
+    if (validatorResponse) {
+      return res.json(validatorResponse);
+    }
     var emailTemplate = {
-    //   toAddress: req.body.toAddress,
-    //   subject: req.body.subject,
-    //   body:req.body.text
+      toAddress: req.body.toAddress,
+      subject: req.body.subject,
+      body:req.body.text
     };
     
-    // if(req.body.html){
-    //     emailTemplate["html"] = req.body.html
-    // }
+    if(req.body.html){
+        emailTemplate["html"] = req.body.html
+    }
     
     var sendEmailResponse = await sendEmail(req.decodedData,emailTemplate);
     return res.json(sendEmailResponse);
-//   }
+  }
 
 }
 
