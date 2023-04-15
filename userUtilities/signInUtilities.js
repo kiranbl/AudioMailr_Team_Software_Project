@@ -5,6 +5,7 @@ const authUtilities = require("../utilities/authUtilities");
 const { encrypt, validate} = require("../utilities/hashUtilities");
 
 const {googleAuthHandler} = require("./googleAuthUtilities");
+const {outlookAuthHandler} = require("./outlookAuthUtilities");
 
 var signInErrorCode = (statusCode) => {
   switch (statusCode) {
@@ -82,7 +83,9 @@ var signInHandler = async (req, res) => {
     return res.json(await googleAuthHandler());
     
   }else if(req.body.authtype === "yahoo"){}
-  else if(req.body.authtype === "outlook"){}
+  else if(req.body.authtype === "outlook"){
+    return res.json(await outlookAuthHandler());
+  }
   else {
     var validatorResponse = validator.signInValidator(req.body);
     if (validatorResponse) {

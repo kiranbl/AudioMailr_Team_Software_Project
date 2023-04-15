@@ -4,6 +4,7 @@ const dbUtilities = require("../utilities/dbUtilities");
 const authUtilities = require("../utilities/authUtilities");
 const { encrypt } = require("../utilities/hashUtilities");
 const {googleAuthHandler} = require("./googleAuthUtilities");
+const {outlookAuthHandler} = require("./outlookAuthUtilities");
 
 var signUpErrorCode = (statusCode,type) => {
   switch (statusCode) {
@@ -98,7 +99,9 @@ var signUpHandler = async (req, res) => {
      return res.json(await googleAuthHandler());
     
   }else if(req.body.authtype === "yahoo"){}
-  else if(req.body.authtype === "outlook"){}
+  else if(req.body.authtype === "outlook"){
+    return res.json(await outlookAuthHandler());
+  }
    else {
     var validatorResponse = validator.signUpValidator(req.body);
     if (validatorResponse) {
