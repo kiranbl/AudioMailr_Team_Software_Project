@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from '../../utils/validator';
 import classnames from 'classnames';
-
+import { setUser } from "../../actions/auth";
 const SignInForm = (props) => {
   const [emailAddress1, setEmailAddress1] = useState('');
   const [password1, setPassword1] = useState('');
@@ -34,7 +34,8 @@ const SignInForm = (props) => {
               msg: 'log in success',
               type: 'success',
             });
-            navigate('/');
+            //props.authActions.setUser(res.data.user);
+            navigate('/mailbox');
           } else {
             props.flashActions.addFlashMessage({
               id: Math.random().toString().slice(2),

@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Link } from 'react-router-dom'
-
+import "./nav.css"
 export default class HeaderNav extends Component {
   render() {
     return (
@@ -13,13 +13,13 @@ export default class HeaderNav extends Component {
                 <ul class="nav">
 
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/">Home Page</a>
+                        <a class="nav-link active" aria-current="page" href="/mailbox">Home Page</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/signup">Sign Up</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link active" aria-current="page" href="/signin">Sign In</a>
+                        <a class="nav-link active" aria-current="page" href="/">Sign In</a>
                     </li>
                 </ul>
             </div>

@@ -5,20 +5,24 @@ import * as authActions from "../../actions/auth"
 import * as flashActions from "../../actions/flash"
 import { bindActionCreators } from "redux"
 //<SignInForm flashActions={ this.props.flashActions } authActions={ this.props.authActions }/>
-
+import "./SignInPage.css";
 class SignInPage extends Component {
     render() {
-        return (
-            <div className="row">
-                <div className="col-md-3"></div>
-                <div className="col-md-6">
-                    <SignInForm flashActions={ this.props.flashActions } authActions={ this.props.authActions }/>
-                </div>
-                <div className="col-md-3"></div>
-            </div>
-        )
+      return (
+        <div className="row no-margin-padding">
+          <div className="col-md-3"></div>
+          <div className="col-md-6">
+            <SignInForm
+              flashActions={this.props.flashActions}
+              authActions={this.props.authActions}
+            />
+          </div>
+          <div className="col-md-3"></div>
+        </div>
+      );
     }
-}
+  }
+  
 
 const mapDispatchToProps = dispatch =>{
     return{
