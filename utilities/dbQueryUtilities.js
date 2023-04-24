@@ -3,15 +3,15 @@ var queryBuilder = (queryType,data)=>{
     if(queryType === "insert"){
 
         var dataArray = Object.keys(data);
-        var key="";
-        var value="";
+        var key='';
+        var value='';
         for(var i=0; i<dataArray.length;i++){
             if(i === dataArray.length-1){
                 key += `${dataArray[i]} `;
-                value += `"${data[dataArray[i]]}" `
+                value += `'${data[dataArray[i]]}' `
             }else{
                 key += `${dataArray[i]}, `;
-                value += `"${data[dataArray[i]]}", `
+                value += `'${data[dataArray[i]]}', `
             }
         }
         
@@ -59,7 +59,8 @@ var queryBuilder = (queryType,data)=>{
 
         let limitQuery="";
         if(data.limitCondition){
-            limitQuery = limitQuery+"LIMIT " + `${data.limitConditon.startRoW}, ${data.limitCondition.count}`;
+            console.log("limit")
+            limitQuery = limitQuery+"LIMIT " + `${data.limitCondition.startRow}, ${data.limitCondition.count}`;
         }
       
         

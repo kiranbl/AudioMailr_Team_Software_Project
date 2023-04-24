@@ -12,9 +12,9 @@ var sendMailErrorCode = (statusCode,email) => {
   }
 }; 
 const oauth2Client = new google.auth.OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  process.env.REDIRECT_URI
+  process.env.GMAIL_CLIENT_ID,
+  process.env.GMAIL_CLIENT_SECRET,
+  process.env.GMAIL_REDIRECT_URI
 
 );
 let sendEmail = async (data,emailTemplate) =>{
@@ -25,8 +25,8 @@ let sendEmail = async (data,emailTemplate) =>{
    });
    const accessToken = await oauth2Client.getAccessToken();
    console.log("TOKEN ===>>>> ",accessToken);
-   console.log("clientid ===>>>> ",process.env.CLIENT_ID);
-   console.log("clientsecret ===>>>> ",process.env.CLIENT_SECRET);
+   console.log("clientid ===>>>> ",process.env.GMAIL_CLIENT_ID);
+   console.log("clientsecret ===>>>> ",process.env.GMAIL_CLIENT_SECRET);
    console.log("ACCESSTOKEN ===>>>> ",accessToken.res.data.access_token);
    console.log("REFRESHTOKEN ===>>>> ",accessToken.res.data.refresh_token);
       
@@ -35,8 +35,8 @@ let sendEmail = async (data,emailTemplate) =>{
         auth: {
           type: "OAuth2",
           user: data.emailAddress1,
-          clientId: process.env.CLIENT_ID,
-          clientSecret:process.env.CLIENT_SECRET,
+          clientId: process.env.GMAIL_CLIENT_ID,
+          clientSecret:process.env.GMAIL_CLIENT_SECRET,
           accessToken: accessToken.res.data.access_token
         }
       });

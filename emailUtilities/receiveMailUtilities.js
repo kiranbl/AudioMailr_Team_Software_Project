@@ -6,9 +6,9 @@ const dbUtilities = require("../utilities/dbUtilities");
 const {getInboxEmail} = require("./getMailUtilities")
 
 const oauth2Client = new google.auth.OAuth2(
-  process.env.CLIENT_ID,
-  process.env.CLIENT_SECRET,
-  process.env.REDIRECT_URI
+  process.env.GMAIL_CLIENT_ID,
+  process.env.GMAIL_CLIENT_SECRET,
+  process.env.GMAIL_REDIRECT_URI
 
 );
 
@@ -31,7 +31,6 @@ let storegmailData = async (accessToken,data,unreadMessagesID)=>{
         },
       );
         
-        console.log(emailData.data.payload.headers)
       let obj = {
          email_id:x[i]
         }
@@ -39,24 +38,16 @@ let storegmailData = async (accessToken,data,unreadMessagesID)=>{
       emailData.data.payload.headers.forEach(h =>{
 
         if(h.name==="From" && h.value.includes("<")){
-          console.log(h.name)
-          let from =h.value.split(" <");
-          from = from[1].substr(0,from[1].length-1)
-          
-          obj["fromAddress"] = from;
+          obj["fromAddress"] = h.value.toString().replace(/"/g, '').replace(/'/g,'');
         }
         else if(h.name==="From"){
-          obj["fromAddress"] = h.value;
+          obj["fromAddress"] = h.value.toString().replace(/"/g, '').replace(/'/g,'');
         }
         if(h.name==="To" && h.value.includes("<")){ 
-          console.log(h.name)
-        let to =h.value.split(" <");
-        to = to[1].substr(0,to[1].length-1)
-        
-        obj["toAddress"] = to;
+          obj["toAddress"] = h.value.toString().replace(/"/g, '').replace(/'/g,'');
         }
         else if(h.name==="To"){
-          obj["toAddress"] = h.value;
+          obj["toAddress"] = h.value.toString().replace(/"/g, '').replace(/'/g,'');
         }
 
         
@@ -66,11 +57,12 @@ let storegmailData = async (accessToken,data,unreadMessagesID)=>{
 
 
         if(h.name==="Subject"){
-            obj["subject"]= h.value
+            obj["subject"]= h.value.toString().replace(/"/g, '\\"').replace(/'/g,"\\'")
         }
       })
 
-      obj["body"] = Buffer.from(Array.isArray(emailData.data.payload)?emailData.data.payload.parts[0].body.data:emailData.data.payload.body.data ,'base64').toString('ascii');
+      obj["body"] = (emailData.data.payload.parts)?emailData.data.payload.parts[0].body.data:emailData.data.payload.body.data;
+      if (obj["body"] === undefined) obj["body"]='NULL';
 
       obj["user_id"] = data.user_id;
       obj["status"] = "unread";
@@ -117,7 +109,7 @@ let receiveEmail = async (data) =>{
           
           var existingemailids = {
             conditionData: {
-              toAddress: data.emailAddress1,
+             user_id: data.user_id,
             },
             conditionType: 'OR',
             selectionData: ["email_id"],

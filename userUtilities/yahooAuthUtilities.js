@@ -4,7 +4,7 @@ const dbQueryUtilities = require("../utilities/dbQueryUtilities");
 const dbUtilities = require("../utilities/dbUtilities");
 const authUtilities = require("../utilities/authUtilities");
 
-var googleAuthErrorCode = (statusCode) => {
+var signUpErrorCode = (statusCode) => {
   switch (statusCode) {
     case 2000:
       return { errorcode: statusCode, message: `User Already Exists` };
@@ -13,12 +13,12 @@ var googleAuthErrorCode = (statusCode) => {
   }
 };
 const oauth2Client = new google.auth.OAuth2(
-  process.env.GMAIL_CLIENT_ID,
-  process.env.GMAIL_CLIENT_SECRET,
-  process.env.GMAIL_REDIRECT_URI
+  process.env.CLIENT_ID,
+  process.env.CLIENT_SECRET,
+  process.env.REDIRECT_URI
 
 );
-let getGoogleUser = async (code)=> {
+let getYahooUser = async (code)=> {
   try{
     console.log(code);
     const { tokens } = await oauth2Client.getToken(code);
@@ -102,7 +102,7 @@ let getGoogleUser = async (code)=> {
  
 }
 
-var getGoogleAuthCode = async (req,res)=>{
+var getYahooAuthCode = async (req,res)=>{
   console.log(req.query)
   // {
   //   code: '',
@@ -111,11 +111,11 @@ var getGoogleAuthCode = async (req,res)=>{
   //   prompt: 'consent'
   // }
   let code = req.query.code;
-  let getUser = await getGoogleUser(code);
+  let getUser = await getYahooUser(code);
   return getUser;
 
 }
-var getGoogleAuthURL= ()=> {
+var getYahooAuthURL= ()=> {
   /*
    * Generate a url that asks permissions to the user's email and profile
    */
@@ -136,9 +136,9 @@ var getGoogleAuthURL= ()=> {
 
 
   
-  var googleAuthHandler = async () => {
+  var yahooAuthHandler = async () => {
     console.log("Reached here");
-    let data = {url: getGoogleAuthURL()}
+    let data = {url: getYahooAuthURL()}
     console.log(data);
     return(data);
   };
@@ -147,7 +147,7 @@ var getGoogleAuthURL= ()=> {
 
   
   module.exports ={ 
-    googleAuthHandler,
-    getGoogleAuthCode
+    yahooAuthHandler,
+    getYahooAuthCode
   };
   

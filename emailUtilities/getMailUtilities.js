@@ -2,7 +2,7 @@
 const dbQueryUtilities = require("../utilities/dbQueryUtilities");
 const dbUtilities = require("../utilities/dbUtilities");
 
-let getSentEmail = ()=>{
+let getSentEmail =async (data,bodyData)=>{
 try{
     let pagenumber = 0;
     if(bodyData.pagenumber){
@@ -10,10 +10,10 @@ try{
     }
     var getMailData = {
         conditionData: {
-          toAddress: data.emailAddress1,
+            user_id: data.user_id,
         },
-        limitConditon:{
-            startRoW:pagenumber*15,
+        limitCondition:{
+            startRow:pagenumber*15,
             count:15
         },
         orderCondition:{
@@ -36,7 +36,7 @@ catch(error){
 console.log(error)
 }
 
-
+}
 
 let getInboxEmail = async (data,bodyData) =>{
     try{
@@ -46,10 +46,10 @@ let getInboxEmail = async (data,bodyData) =>{
         }
         var getMailData = {
             conditionData: {
-              toAddress: data.emailAddress1,
+                user_id: data.user_id,
             },
-            limitConditon:{
-                startRoW:pagenumber*15,
+            limitCondition:{
+                startRow:pagenumber*15,
                 count:15
             },
             orderCondition:{
@@ -77,5 +77,5 @@ let getInboxEmail = async (data,bodyData) =>{
 
 module.exports = {
     getInboxEmail,
-    
-};
+    getSentEmail
+}

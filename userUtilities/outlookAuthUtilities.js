@@ -1,4 +1,3 @@
-const { google } = require("googleapis");
 const msal = require("@azure/msal-node");
 var graph = require("@microsoft/microsoft-graph-client");
 require("isomorphic-fetch");
@@ -10,9 +9,9 @@ const authUtilities = require("../utilities/authUtilities");
 
 const msalConfig = {
   auth: {
-    clientId: process.env.OAUTH_CLIENT_ID || "",
-    authority: process.env.OAUTH_AUTHORITY,
-    clientSecret: process.env.OAUTH_CLIENT_SECRET,
+    clientId: process.env.OUTLOOK_CLIENT_ID || "",
+    authority: process.env.OUTLOOK_AUTHORITY,
+    clientSecret: process.env.OUTLOOK_CLIENT_SECRET,
   },
   system: {
     loggerOptions: {
@@ -103,11 +102,11 @@ var getOutlookAuthCode = async (req, res) => {
     return;
   }
   console.log(JSON.stringify(req.query));
-  const scopes = process.env.OAUTH_SCOPES || "https://graph.microsoft.com/.default";
+  const scopes = process.env.OUTLOOK_SCOPES || "https://graph.microsoft.com/.default";
   const tokenRequest = {
     code: req.query.code,
     scopes: scopes.split(","),
-    redirectUri: process.env.OAUTH_REDIRECT_URI,
+    redirectUri: process.env.OUTLOOK_REDIRECT_URI,
   };
   const response = await msalClient.acquireTokenByCode(tokenRequest);
   console.log(response);
@@ -145,10 +144,10 @@ var getAuthenticatedClient = (msalClient, userId) => {
           // This method uses the token cache and
           // refreshes expired tokens as needed
           const scopes =
-            process.env.OAUTH_SCOPES || "https://graph.microsoft.com/.default";
+            process.env.OUTLOOK_SCOPES || "https://graph.microsoft.com/.default";
           const response = await msalClient.acquireTokenSilent({
             scopes: scopes.split(","),
-            redirectUri: process.env.OAUTH_REDIRECT_URI,
+            redirectUri: process.env.OUTLOOK_REDIRECT_URI,
             account: account,
           });
 
@@ -173,9 +172,9 @@ var getOutlookAuthURL = async (req, res) => {
 
   try {
     const scopes =
-      process.env.OAUTH_SCOPES || "https://graph.microsoft.com/.default";
+      process.env.OUTLOOK_SCOPES || "https://graph.microsoft.com/.default";
     const authurl = await msalClient.getAuthCodeUrl({
-      redirectUri: process.env.OAUTH_REDIRECT_URI,
+      redirectUri: process.env.OUTLOOK_REDIRECT_URI,
       scopes: scopes.split(","),
     });
     console.log(`authurl: ${authurl}`);
