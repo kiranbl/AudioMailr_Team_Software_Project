@@ -25,7 +25,8 @@ export function asyncSetUserObj(data){
                 // redux →token
                 dispatch(setUserObj({
                     token:res.data.token,
-                    nick:res.data.nick
+                    nick:res.data.nick,
+                    emailAddress1: data.emailAddress1,
                 }))
                 /**
                  * store locally:
@@ -34,7 +35,9 @@ export function asyncSetUserObj(data){
                  */
                 localStorage.setItem(REACT_REDUX_LOCAL,JSON.stringify({
                     token:res.data.token,
-                    nick:res.data.nick
+                    nick:res.data.nick,
+                    emailAddress1: data.emailAddress1,
+
                 }))
             }
             return res

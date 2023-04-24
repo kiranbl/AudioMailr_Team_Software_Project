@@ -89,3 +89,11 @@ This is tricky. I still have no idea how to do it. Also in the features list.
 After merging the log in system and mailbox, the navbar of the log in and sign up page became so long.
 It could be some style conflict.
 
+
+
+# dependencities for email providers
+
+npm install react-google-login @azure/msal-browser
+npm install react-google-login
+
+npm install @azure/msal-browser

@@ -1,6 +1,8 @@
 import { SET_USER } from "../constants"
 const userState = {
-    user:{}
+    user: {
+        emailAddress1: '',
+      },
 }
 
 const auth = (state = userState,action) =>{
