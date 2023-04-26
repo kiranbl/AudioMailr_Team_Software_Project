@@ -70,6 +70,7 @@ let getGoogleUser = async (code)=> {
       var token = await authUtilities.generateJWT(existingUser);
       console.log({token:token});
 
+    
       return { token: token };
       }
       else{
@@ -112,7 +113,15 @@ var getGoogleAuthCode = async (req,res)=>{
   // }
   let code = req.query.code;
   let getUser = await getGoogleUser(code);
-  return getUser;
+
+  res.cookie("AUDIOMAILR_JWT", getUser.token, {
+    maxAge: 90000,
+    httpOnly: true,
+    secure: false,
+  });
+
+  res.redirect("http://localhost:3001/mailbox");
+  //return res.json(getUser);
 
 }
 var getGoogleAuthURL= ()=> {
