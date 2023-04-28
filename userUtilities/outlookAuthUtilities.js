@@ -115,7 +115,16 @@ var getOutlookAuthCode = async (req, res) => {
     response.account.homeAccountId
   );
   let getUser = await getOutlookUser(client,response.accessToken);
-  return getUser;
+  //return getUser;
+
+  res.cookie("AUDIOMAILR_JWT", getUser.token, {
+    maxAge: 90000,
+    httpOnly: true,
+    secure: false,
+  });
+
+  res.redirect("http://localhost:3001/mailbox");
+  //return res.json(getUser);
 };
 
 var getAuthenticatedClient = (msalClient, userId) => {

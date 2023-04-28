@@ -5,60 +5,101 @@ const dbUtilities = require("../utilities/dbUtilities");
 const  { google } = require('googleapis');
 const MOMENT= require( 'moment' );
 
+const axios = require('axios');
+
 var sendMailErrorCode = (statusCode,email) => {
   switch (statusCode) {
     case 6000:
       return { errorcode: statusCode, message: `Mail has been sent to ${email} successfully..` };
   }
 }; 
+
 const oauth2Client = new google.auth.OAuth2(
   process.env.GMAIL_CLIENT_ID,
   process.env.GMAIL_CLIENT_SECRET,
   process.env.GMAIL_REDIRECT_URI
 
 );
+
+let transportMail = async (data,emailTemplate) =>{
+  let transporter;
+  if(data.provider === "google"){
+    oauth2Client.setCredentials({
+      refresh_token: data.refreshToken
+ });
+ const accessToken = await oauth2Client.getAccessToken();
+ console.log("TOKEN ===>>>> ",accessToken);
+ console.log("clientid ===>>>> ",process.env.GMAIL_CLIENT_ID);
+ console.log("clientsecret ===>>>> ",process.env.GMAIL_CLIENT_SECRET);
+ console.log("ACCESSTOKEN ===>>>> ",accessToken.res.data.access_token);
+ console.log("REFRESHTOKEN ===>>>> ",accessToken.res.data.refresh_token);
+    
+  transporter = nodemailer.createTransport({
+      service:data.provider,
+      auth: {
+        type: "OAuth2",
+        user: data.emailAddress1,
+        clientId: process.env.GMAIL_CLIENT_ID,
+        clientSecret:process.env.GMAIL_CLIENT_SECRET,
+        accessToken: accessToken.res.data.access_token
+      }
+    });
+  transporter.verify(function(error, success) {
+    if (error) {
+      console.log(error);
+    } else {
+      console.log("Server is ready to take our messages");
+    }
+  });
+
+  let info = await transporter.sendMail({
+    from: data.emailAddress1, // sender address
+    to: emailTemplate.toAddress, // list of receivers
+    subject: emailTemplate.subject, // Subject line
+    text: emailTemplate.body, // plain text body
+    html:(emailTemplate.html)?emailTemplate.html:"", // html body
+  });
+  
+  console.log(info);
+  return info
+  }
+  if(data.provider === "outlook"){
+ 
+  let msgPayload = { 
+    //Ref: https://learn.microsoft.com/en-us/graph/api/resources/message#properties
+    message: {
+      subject: emailTemplate.subject,
+      body:{
+        contentType: 'Text',
+        content: emailTemplate.body  
+      },
+      toRecipients: [{emailAddress: {address: emailTemplate.toAddress}}]
+    }
+  }; //using axios as http helper
+
+  let sendOutlookMail = await axios ({ // Send Email using Microsoft Graph
+    method: 'post',
+    url: `https://graph.microsoft.com/v1.0/users/${data.emailAddress1}/sendMail`,
+    headers: {
+      'Authorization': "Bearer " + data.refreshToken,
+      'Content-Type': 'application/json'
+    },
+    data: msgPayload
+  });
+
+  console.log("ERRORRRR SEND OUTLOOK",sendOutlookMail.config.response);
+
+  //return sendOutlookMail;
+  }
+}
 let sendEmail = async (data,emailTemplate) =>{
     try{
       console.log(data)
-      oauth2Client.setCredentials({
-        refresh_token: data.refreshToken
-   });
-   const accessToken = await oauth2Client.getAccessToken();
-   console.log("TOKEN ===>>>> ",accessToken);
-   console.log("clientid ===>>>> ",process.env.GMAIL_CLIENT_ID);
-   console.log("clientsecret ===>>>> ",process.env.GMAIL_CLIENT_SECRET);
-   console.log("ACCESSTOKEN ===>>>> ",accessToken.res.data.access_token);
-   console.log("REFRESHTOKEN ===>>>> ",accessToken.res.data.refresh_token);
-      
-   let transporter = nodemailer.createTransport({
-        service:data.provider,
-        auth: {
-          type: "OAuth2",
-          user: data.emailAddress1,
-          clientId: process.env.GMAIL_CLIENT_ID,
-          clientSecret:process.env.GMAIL_CLIENT_SECRET,
-          accessToken: accessToken.res.data.access_token
-        }
-      });
-    transporter.verify(function(error, success) {
-      if (error) {
-        console.log(error);
-      } else {
-        console.log("Server is ready to take our messages");
-      }
-    });
-    
-      let info = await transporter.sendMail({
-        from: data.emailAddress1, // sender address
-        to: emailTemplate.toAddress, // list of receivers
-        subject: emailTemplate.subject, // Subject line
-        text: emailTemplate.body, // plain text body
-        html:(emailTemplate.html)?emailTemplate.html:"", // html body
-      });
+      let transporterResponse = await transportMail(data,emailTemplate);
+
       
       emailTemplate["fromAddress"]= data.emailAddress1;
-      console.log(info)
-      if(info){
+      if(transporterResponse){
        emailTemplate["user_id"] = data.user_id;
        emailTemplate["createdAt"] = MOMENT().format( 'YYYY-MM-DD  HH:mm:ss.000' );
 
@@ -77,35 +118,6 @@ let sendEmail = async (data,emailTemplate) =>{
       console.log(error)
     }
    
-      
-
-
-
-
-  //   var smtpProtocol = nodemailer.createTransport({
-  //       host: "smtp.mail.yahoo.com",
-  //       port: 587,
-  //       secure: false,
-  //       auth: {
-  //         user: "",
-  //         pass: ""
-  //     }
-  // });
-  
-  // var mailoption = {
-  //     from: "audiomailr@​yahoo.com",
-  //     to: "kiran.kicchu@gmail.com",
-  //     subject: "Test Mail",
-  //     html: 'Good Morning!'
-  // }
-  
-  // smtpProtocol.sendMail(mailoption, function(err, response){
-  //     if(err) {
-  //         console.log(err);
-  //     } 
-  //     console.log('Message Sent' + response.message);
-  //     smtpProtocol.close();
-  // });
 
 }
 
