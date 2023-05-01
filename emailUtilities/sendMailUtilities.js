@@ -11,6 +11,8 @@ var sendMailErrorCode = (statusCode,email) => {
   switch (statusCode) {
     case 6000:
       return { errorcode: statusCode, message: `Mail has been sent to ${email} successfully..` };
+      case 6001:
+      return { errorcode: statusCode, message: `Authorization Expired, Login Again` };
   }
 }; 
 
@@ -87,9 +89,10 @@ let transportMail = async (data,emailTemplate) =>{
     data: msgPayload
   });
 
-  console.log("ERRORRRR SEND OUTLOOK",sendOutlookMail.config.response);
-
-  //return sendOutlookMail;
+  console.log("ERRORRRR SEND OUTLOOK",sendOutlookMail);
+  if(sendOutlookMail.status === 202){
+  return sendOutlookMail;
+  }
   }
 }
 let sendEmail = async (data,emailTemplate) =>{

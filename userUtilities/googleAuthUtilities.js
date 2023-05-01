@@ -3,6 +3,7 @@ const axios = require("axios");
 const dbQueryUtilities = require("../utilities/dbQueryUtilities");
 const dbUtilities = require("../utilities/dbUtilities");
 const authUtilities = require("../utilities/authUtilities");
+const MOMENT= require( 'moment' );
 
 var googleAuthErrorCode = (statusCode) => {
   switch (statusCode) {
@@ -42,7 +43,7 @@ let getGoogleUser = async (code)=> {
           emailAddress1: googleUser.data.email
         },
         conditionType: 'OR',
-        selectionData: ["user_id","emailAddress1", "emailAddress2"],
+        selectionData: ["user_id","emailAddress1", "emailAddress2","createdAt"],
         tablename: "user",
       };
   
@@ -56,7 +57,8 @@ let getGoogleUser = async (code)=> {
       let user = {
         userName: googleUser.data.name,
         emailAddress1:googleUser.data.email,
-        password1:googleUser.data.id
+        password1:googleUser.data.id,
+        createdAt:MOMENT().format( 'YYYY-MM-DD  HH:mm:ss.000' )
       };
       if(selectQueryResponse && selectQueryResponse.length>0){
       let existingUser = {
@@ -65,7 +67,8 @@ let getGoogleUser = async (code)=> {
         refreshToken:refreshToken,
         profileimage:googleUser.data.picture,
         provider:"gmail",
-        user_id:selectQueryResponse[0].user_id
+        user_id:selectQueryResponse[0].user_id,
+        createdAt:selectQueryResponse[0].createdAt
       }
       var token = await authUtilities.generateJWT(existingUser);
       console.log({token:token});
@@ -89,6 +92,7 @@ let getGoogleUser = async (code)=> {
          user["profileimage"]=googleUser.data.picture;
          user["provider"]="gmail";
          user["user_id"]=queryResponse.insertId;
+         user["createdAt"]=user.createdAt;
           var token = await authUtilities.generateJWT(user);
           console.log({token:token});
     

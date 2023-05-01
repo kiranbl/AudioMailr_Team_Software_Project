@@ -4,6 +4,7 @@ require("isomorphic-fetch");
 const dbQueryUtilities = require("../utilities/dbQueryUtilities");
 const dbUtilities = require("../utilities/dbUtilities");
 const authUtilities = require("../utilities/authUtilities");
+const MOMENT= require( 'moment' );
 
 
 
@@ -40,7 +41,7 @@ let getOutlookUser = async (client,accessToken) => {
         emailAddress1: outlookUser.userPrincipalName,
       },
       conditionType: "OR",
-      selectionData: ["user_id", "emailAddress1", "emailAddress2"],
+      selectionData: ["user_id", "emailAddress1", "emailAddress2","createdAt"],
       tablename: "user",
     };
 
@@ -55,6 +56,7 @@ let getOutlookUser = async (client,accessToken) => {
       userName: outlookUser.displayName,
       emailAddress1: outlookUser.userPrincipalName,
       password1: outlookUser.id,
+      createdAt:MOMENT().format( 'YYYY-MM-DD  HH:mm:ss.000' )
     };
     if (selectQueryResponse && selectQueryResponse.length > 0) {
       let existingUser = {
@@ -64,6 +66,7 @@ let getOutlookUser = async (client,accessToken) => {
         profileimage: outlookUser.picture,
         provider: "outlook",
         user_id: selectQueryResponse[0].user_id,
+        createdAt:selectQueryResponse[0].createdAt
       };
       var token = await authUtilities.generateJWT(existingUser);
       console.log({ token: token });
@@ -85,6 +88,7 @@ let getOutlookUser = async (client,accessToken) => {
         user["profileimage"] = outlookUser.picture;
         user["provider"] = "outlook";
         user["user_id"] = queryResponse.insertId;
+        user["createdAt"] = user.createdAt;
         var token = await authUtilities.generateJWT(user);
         console.log({ token: token });
 
