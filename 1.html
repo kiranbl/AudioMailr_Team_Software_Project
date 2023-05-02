@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Text-to-Speech Example</title>
+</head>
+<body>
+  <h1>Text-to-Speech Example</h1>
+  <textarea id="text-to-speech"></textarea>
+  <button id="speak-button">Speak</button>
+
+  <script>
+    // Get the DOM elements
+    const textToSpeech = document.getElementById('text-to-speech');
+    const speakButton = document.getElementById('speak-button');
+
+    // Initialize the SpeechSynthesis API
+    const synth = window.speechSynthesis;
+
+    // Define the event listener for the speak button
+    speakButton.addEventListener('click', () => {
+      // Create a new SpeechSynthesisUtterance object
+      const utterance = new SpeechSynthesisUtterance(textToSpeech.value);
+
+      // Set the voice and speech settings
+      utterance.voice = synth.getVoices().find((voice) => voice.lang === 'en-US');
+      utterance.pitch = 1.0;
+      utterance.rate = 1.0;
+
+      // Add pauses for punctuation
+      utterance.text = utterance.text.replace(/[.,!?]/g, (match) => `${match} `);
+
+      // Normalize text for better pronunciation
+      utterance.text = utterance.text.replace(/don't/g, 'do not');
+      utterance.text = utterance.text.replace(/can't/g, 'cannot');
+      utterance.text = utterance.text.replace(/won't/g, 'will not');
+
+      // Speak the text
+      synth.speak(utterance);
+    });
+  </script>
+</body>
+</html>
