@@ -25,7 +25,7 @@ const oauth2Client = new google.auth.OAuth2(
 
 let transportMail = async (data,emailTemplate) =>{
   let transporter;
-  if(data.provider === "google"){
+  if(data.provider === "gmail"){
     oauth2Client.setCredentials({
       refresh_token: data.refreshToken
  });

@@ -221,7 +221,7 @@ let receiveEmail = async (data) =>{
           else{
             // New USER RECEIVEING MAIL FOR THE FIRST TIME
             let unreadNewMessagesID = [];
-            if(unreadMessagesID.data.value.length > 0) {
+            if(unreadMessagesID.data.value && unreadMessagesID.data.value.length > 0) {
               unreadMessagesID.data.messages.forEach(unread => unreadNewMessagesID.push(unread.id))
               console.log(unreadNewMessagesID)
               let storeMail = storeGmailData(accessToken,data,unreadNewMessagesID);
