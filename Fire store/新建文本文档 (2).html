@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8">
+    <title>Text-to-Speech Web Page</title>
+  </head>
+  <body>
+    <h1>Text-to-Speech Web Page</h1>
+    <p>Type in some text and click the button to hear it spoken aloud.</p>
+
+    <label for="textToSpeech">Text to convert:</label>
+    <textarea id="textToSpeech"></textarea>
+
+    <label for="apiSelect">Choose an API:</label>
+    <select id="apiSelect">
+      <option value="google">Google Cloud Text-to-Speech</option>
+    </select>
+
+    <button id="speechButton">Speak</button>
+
+    <script>
+      function convertToGoogleSpeech(text) {
+        const api = 'https://texttospeech.googleapis.com/v1/text:synthesize';
+
+        // Build the API request
+        const request = {
+          audioConfig: {
+            audioEncoding: 'MP3',
+            pitch: 0,
+            speakingRate: 1
+          },
+          input: {
+            text: text
+          },
+          voice: {
+            languageCode: 'en-US',
+            name: 'en-US-Wavenet-D'
+          }
+        };
+
+        // Make the API request
+        fetch(api, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer <your_access_token>',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(request)
+        })
+        .then(response => response.json())
+        .then(data => {
+          // Play the resulting audio
+          const audioUrl = data.audioContent;
+          const audioElement = new Audio(`data:audio/mpeg;base64,${audioUrl}`);
+          audioElement.play();
+        });
+      }
+
+      function convertToIbmSpeech(text) {
+        const api = 'https://api.us-south.text-to-speech.watson.cloud.ibm.com/instances/<your_instance_id>/v1/synthesize';
+
+        // Build the API request
+        const request = {
+          text: text,
+          voice: {
+            gender: 'female',
+            language: 'en-US',
+            name: 'en-US_AllisonV3Voice'
+          },
+          accept: 'audio/mp3'
+        };
+
+        // Make the API request
+        fetch(api, {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Basic <your_credentials>',
+            'Content-Type': 'application/json'
+          },
+          body: JSON.stringify(request)
+        })
+        .then(response => response.arrayBuffer())
+        .then(audio => {
+          
+// Play the resulting audio
+         const audioUrl = URL.createObjectURL(new Blob([audio], { type: 'audio/mpeg' }));
+         const audioElement = new Audio(audioUrl);
+         audioElement.play();
+        });
+      }
+
+      function convertToAwsSpeech(text) {
+        const accessKeyId = '<your_access_key_id>';
+        const secretAccessKey = '<your_secret_access_key>';
+        const region = 'us-east-1';
+        const api = `https://polly.${region}.amazonaws.com/v1/speech`;
+
+        // Build the API request
+        const request = {
+          OutputFormat: 'mp3',
+          Text: text,
+          VoiceId: 'Joanna'
+        };
+        const urlParams = new URLSearchParams(request).toString();
+
+// Make the API request
+        fetch(`${api}?${urlParams}`, {
+          headers: {
+            'Authorization': `AWS4-HMAC-SHA256 Credential=${accessKeyId}/${new Date().toISOString().substr(0, 10)}/${region}/polly/aws4_request, SignedHeaders=host;x-amz-date, Signature=${signature}`,
+            'Content-Type': 'application/json',
+            'X-Amz-Date': amzDate,
+            'X-Amz-Security-Token': sessionToken
+          },
+          method: 'GET'
+        })
+        .then(response => response.arrayBuffer())
+        .then(audio => {
+          // Play the resulting audio
+          const audioUrl = URL.createObjectURL(new Blob([audio], { type: 'audio/mpeg' }));
+          const audioElement = new Audio(audioUrl);
+          audioElement.play();
+        });
+      }
+
+      const speechButton = document.querySelector('#speechButton');
+      const textToSpeech = document.querySelector('#textToSpeech');
+      const apiSelect = document.querySelector('#apiSelect');
+
+      speechButton.addEventListener('click', () => {
+        const text = textToSpeech.value;
+        const api = apiSelect.value;
+
+        switch (api) {
+          case 'google':
+            convertToGoogleSpeech(text);
+            break;
+          case 'ibm':
+            convertToIbmSpeech(text);
+            break;
+          case 'aws':
+            convertToAwsSpeech(text);
+            break;
+          default:
+            console.error(`Unsupported API: ${api}`);
+        }
+      });
+    </script>
+  </body>
+</html>

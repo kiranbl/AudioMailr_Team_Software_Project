@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Storage</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      margin: 0;
+    }
+  </style>
+</head>
+<body>
+  <div>
+    <input type="time" id="timeInput">
+    <button id="saveButton">Save Time</button>
+    <button id="loadButton">Load Time</button>
+  </div>
+  <div>
+    UK Time: <span id="ukTime"></span>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAob-IJWewda_XEEqhTjp8aZtwQ3e4ymz8",
+      authDomain: "my-audio-emailer.firebaseapp.com",
+      projectId: "my-audio-emailer",
+      storageBucket: "my-audio-emailer.appspot.com",
+      messagingSenderId: "801207008698",
+      appId: "1:801207008698:web:649ddd92c31df7798bb183"
+    };
+
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    document.getElementById('saveButton').addEventListener('click', saveTime);
+    document.getElementById('loadButton').addEventListener('click', loadTime);
+
+    let loadedTime;
+
+    async function saveTime() {
+      const time = document.getElementById('timeInput').value;
+      try {
+        await db.collection('times').doc('lastTime').set({ time });
+        alert('Time saved successfully.');
+      } catch (error) {
+        console.error('Error saving time:', error);
+        alert('Failed to save time.');
+      }
+    }
+
+    async function loadTime() {
+      try {
+        const doc = await db.collection('times').doc('lastTime').get();
+        if (doc.exists) {
+          loadedTime = doc.data().time;
+          document.getElementById('timeInput').value = loadedTime;
+          alert('Time loaded successfully.');
+        } else {
+          alert('No time saved yet.');
+        }
+      } catch (error) {
+        console.error('Error loading time:', error);
+        alert('Failed to load time.');
+      }
+    }
+
+    function showUKTime() {
+      const ukTime = new Date().toLocaleTimeString('en-GB', { timeZone: 'Europe/London', hour12: false });
+      document.getElementById('ukTime').textContent = ukTime;
+      if (loadedTime && ukTime.slice(0, 5) === loadedTime) {
+        showNotification();
+        startRead();
+      }
+    }
+
+    function showNotification() {
+      if (!('Notification' in window)) {
+        console.error('This browser does not support notifications.');
+        return;
+      }
+
+     function showNotification() {
+      if (!('Notification' in window)) {
+        console.error('This browser does not support notifications.');
+        return;
+      }
+
+      if (Notification.permission === 'granted') {
+        new Notification('Time matched!');
+      } else if (Notification.permission !== 'denied') {
+        Notification.requestPermission().then((permission) => {
+          if (permission === 'granted') {
+            new Notification('Time matched!');
+          }
+        });
+      }
+    }
+
+    function startRead() {
+      console.log("Starting to read...");
+      // Your custom startRead function implementation goes here.
+    }
+
+    // Call showUKTime every second to keep the displayed UK time up-to-date
+    setInterval(showUKTime, 1000);
+
+    // Show the initial UK time
+    showUKTime();
+  </script>
+</body>
+</html>

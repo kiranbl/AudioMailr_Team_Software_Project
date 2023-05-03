@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Text to Speech using 5 APIs</title>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://code.responsivevoice.org/responsivevoice.js?key=YOUR_RESPONSIVEVOICE_API_KEY"></script>
+</head>
+<body>
+    <h1>Text to Speech using 5 APIs</h1>
+    <p>Enter the text you want to convert to speech:</p>
+    <textarea id="text-input" rows="4" cols="50"></textarea>
+    <br>
+    <button onclick="speakWithAPI()">Speak</button>
+    <br>
+    <p>Select the API:</p>
+    <select id="api-selection">
+        <option value="ibm">IBM Watson Text to Speech</option>
+        <option value="google">Google Text-to-Speech</option>
+        <option value="amazon">Amazon Polly</option>
+        <option value="microsoft">Microsoft Azure Cognitive Services</option>
+        <option value="responsivevoice">ResponsiveVoice</option>
+    </select>
+    <audio id="audio-player" controls></audio>
+
+    <script>
+        const API_KEYS = {
+            ibm: 'YOUR_IBM_WATSON_API_KEY',
+            google: 'AIzaSyB-q__QKEut_BBcX3YmaPjynkZscWDqt4Y',
+            amazon: 'YOUR_AMAZON_POLLY_API_KEY',
+            microsoft: 'YOUR_MICROSOFT_AZURE_API_KEY'
+        };
+
+        function speakWithAPI() {
+            const text = document.getElementById('text-input').value;
+            const api = document.getElementById('api-selection').value;
+
+            if (!text.trim()) {
+                alert('Please enter some text to convert to speech.');
+                return;
+            }
+
+            switch (api) {
+                case 'ibm':
+                    // Call the IBM Watson Text to Speech API
+                    break;
+                case 'google':
+                    // Call the Google Text-to-Speech API
+                    break;
+                case 'amazon':
+                    // Call the Amazon Polly API
+                    break;
+                case 'microsoft':
+                    // Call the Microsoft Azure Cognitive Services Text to Speech API
+                    break;
+                case 'responsivevoice':
+                    responsiveVoice.speak(text);
+                    break;
+                default:
+                    alert('Please select a valid API.');
+            }
+        }
+    </script>
+</body>
+</html>

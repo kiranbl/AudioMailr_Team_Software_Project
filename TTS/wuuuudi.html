@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <form action="">
+        <input type="text" class="txt"  >
+        <label for="rate">语音速度</label><input type="range" min="0.5" max="2" value="1" step="0.1" id="rate">
+        <label for="pitch">音调</label><input type="range" min="0" max="2" value="1" step="0.1" id="pitch">
+
+        <button type="submit">文字转语音</button>
+    </form>
+
+    <select></select>
+</body>
+</html>
+
+<script>
+    const voiceSelect = document.querySelector('select');
+    const rate = document.querySelector('#rate');
+    const pitch = document.querySelector('#pitch');
+    let voices = [];
+
+    const synth = window.speechSynthesis;
+
+    synth.addEventListener('voiceschanged', () => {
+        voices = synth.getVoices();
+        for (let i = 0; i < voices.length ; i++) {
+            const option = document.createElement('option');
+            option.textContent = `${voices[i].name} (${voices[i].lang})`;
+
+            if (voices[i].default) {
+                option.textContent += ' — DEFAULT';
+            }
+
+            option.setAttribute('data-lang', voices[i].lang);
+            option.setAttribute('data-name', voices[i].name);
+            voiceSelect.appendChild(option);
+        }
+    });
+
+    document.querySelector('form').onsubmit = function (e) {
+        e.preventDefault();
+
+        const word = document.querySelector('.txt').value;
+
+        let utterThis = new SpeechSynthesisUtterance(word);
+
+        const selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+
+        for (let i = 0; i < voices.length ; i++) {
+            if (voices[i].name === selectedOption) {
+                utterThis.voice = voices[i];
+            }
+        }
+
+        utterThis.pitch = pitch.value;
+        utterThis.rate = rate.value;
+        synth.speak(utterThis);
+    }
+
+    // synth.pending 同时播放两条语音，第一条在播放，第二条则在队列中，返回true
+    // synth.speaking 是否有语音在播放
+    // synth.resume 置于非暂停状态
+</script>

@@ -1,0 +1,73 @@
+// 1. Connect to the mailbox using IMAP
+const Imap = require('imap');
+const imap = new Imap({
+  user: 'your_email_address',
+  password: 'your_email_password',
+  host: 'imap.gmail.com',
+  port: 993,
+  tls: true
+});
+
+imap.once('ready', () => {
+  // 2. Retrieve the list of emails and store them in an array
+  imap.openBox('INBOX', false, (err, box) => {
+    if (err) throw err;
+
+    imap.search(['ALL'], (err, results) => {
+      if (err) throw err;
+
+      const fetch = imap.fetch(results, { bodies: '', markSeen: true });
+      const emails = [];
+
+      fetch.on('message', (msg, seqno) => {
+        const email = { seqno: seqno };
+        msg.on('body', (stream, info) => {
+          let buffer = '';
+
+          stream.on('data', chunk => {
+            buffer += chunk.toString('utf8');
+          });
+
+          stream.on('end', () => {
+            email.body = buffer;
+            emails.push(email);
+          });
+        });
+      });
+
+      fetch.on('end', () => {
+        // 3. Send the list of emails to the web page
+        const emailList = JSON.stringify(emails);
+        res.send(`
+          <html>
+            <head>
+              <title>Email Viewer</title>
+              <script>
+                const emails = ${emailList};
+                function displayEmails() {
+                  const ul = document.createElement('ul');
+                  emails.forEach(email => {
+                    const li = document.createElement('li');
+                    li.textContent = email.seqno;
+                    ul.appendChild(li);
+                  });
+                  document.body.appendChild(ul);
+                }
+                window.onload = displayEmails;
+              </script>
+            </head>
+            <body>
+              <h1>Email Viewer</h1>
+            </body>
+          </html>
+        `);
+      });
+    });
+  });
+});
+
+imap.once('error', err => {
+  console.error(err);
+});
+
+imap.connect();

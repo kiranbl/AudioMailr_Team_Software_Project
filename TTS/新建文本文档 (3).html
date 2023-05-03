@@ -1,0 +1,57 @@
+
+<!DOCTYPE html>
+<html lang="en">
+ 
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<style>
+    #deng {
+        width: 500px;
+        height: 200px;
+        text-align: center;
+    }
+ 
+    input {
+        outline: none;
+        margin-bottom: 10px;
+    }
+</style>
+ 
+<body>
+    <div id="deng">
+        <h1>登录休闲网</h1>
+        <form action="">
+            email:<input type="text" id="box1"><br>
+            密码:&ensp;<input type="password" id="box2"><br>
+            <button id="box3">登录</button>
+        </form>
+    </div>
+</body>
+<script>
+    var oDiv1 = document.getElementById("box1");
+    var oDiv2 = document.getElementById("box2");
+    var oDiv3 = document.getElementById("box3");
+    oDiv3.onclick = function () {
+        var you = oDiv1.value;
+        var mi = oDiv2.value;
+        if (you.indexOf("@") === -1) {
+            alert("请输入正确的邮箱格式");
+            return false;
+        } else if (you.indexOf(".") === -1) {
+            alert("请输入正确的邮箱格式");
+            return false;
+        }
+        if (mi.length < 6) {
+            alert("密码长度至少是6位");
+            return false;
+        } else {
+            alert("输入正确");
+        }
+    }
+</script>
+ 
+</html>

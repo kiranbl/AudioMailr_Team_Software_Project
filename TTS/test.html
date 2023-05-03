@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<button onclick="play()" style="width: 150px;height: 52px;">TTS</button>
+		<script>
+			var msg = new SpeechSynthesisUtterance();
+			msg.text = "This is a test with TTS, text to speech ";
+			msg.lang = 'en'; //
+			msg.volume = 50; // Volume
+			msg.rate = 0.7; //Speed, rang 0.1 -10
+			msg.pitch = 1.5; // Pitch 1-2
+			function play() {
+				speechSynthesis.speak(msg);
+			}
+		</script>
+	</body>
+</html>

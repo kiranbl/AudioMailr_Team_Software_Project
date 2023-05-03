@@ -1,0 +1,34 @@
+<!DOCTYPE>
+<head>
+<title>web page etxt to speech</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="description" content="" />
+<meta name="keywords" content="" />
+<script type="text/javascript">
+
+</script>
+
+<style type="text/css">
+</style>
+</head>
+    <body>
+    text：<input type="text" value="This is a test using Text to Speech" id="inpu">
+    <button onclick="sayTTS()">Play</button>
+    </body>
+    <script>
+    function sayTTS()
+    {
+        var content = document.getElementById('inpu');
+        console.log(content.value);
+        const synth = window.speechSynthesis;
+        const msg = new SpeechSynthesisUtterance();
+        msg.text = content.value;     // text content 
+        msg.lang = "en";  // Language
+        msg.volume = 0.8;      // Volume：0-1
+        msg.rate = 1.5;        // Speed：0-10
+        msg.pitch = 0.8;       // Pitch：0-1
+        synth.speak(msg);    // Play
+    }
+        
+    </script>
+</html>

@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tester3</title>
+    <style>
+        * {margin: 0;padding: 0;}
+    </style>
+</head>
+<body>
+    <h1>tts tester 3</h1>
+    <div>
+        <label for="lang">
+            voice and language choose：
+            <select name="lang" id="lang"></select>
+        </label>
+    </div>
+    <div>
+        <label for="pitch">
+            set the pitch between 1-2
+            <input type="number" value="1" name="pitch" id="pitch" />
+        </label>
+    </div>
+    <div>
+        <label for="rate">
+            set the speed between 0-10：
+            <input type="number" value="1" name="rate" id="rate" />
+        </label>
+    </div>
+    <div>
+        <label for="volume">
+            set the volome between 0-1：
+            <input type="number" value="0.5" name="volume" id="volume" />
+        </label>
+    </div>
+    <textarea name="" id="readText" cols="30" rows="10">this is a test using text to speech </textarea>
+    <button onclick="startRead()">read</button>
+    <button onclick="pause()">stop</button>
+    <button onclick="continueSpeak()">continue</button>
+    <script>
+        const synth = window.speechSynthesis;
+        const voiceSelect = document.querySelector('#lang'); // 语言选择框
+        const pitchInput = document.querySelector('#pitch'); // 音高输入框
+        const rateInput = document.querySelector('#rate'); // 音速输入框
+        const volumeInput = document.querySelector('#volume'); // 声音大小输入框
+        const text = document.getElementById('readText'); // 朗读内容区域
+
+        // 将可选的语言填入到选择框中
+        setTimeout(() => {
+            const selectChild = synth.getVoices().reduce((res, ite) => {
+                return res += `<option value="${ite.lang}" data-name="${ite.name}">${ite.lang} - ${ite.name}</option>`
+            }, '');
+            voiceSelect.innerHTML = selectChild;
+        }, 50);
+
+        // 限制值的公共函数
+        function limitVal({ ele, min, max }) {
+            if (ele.value > max) {
+                ele.value = max;
+            } else if (ele.value < min) {
+                ele.value = min;
+            }
+        }
+
+       
+
+        // 当音高输入框的内容大于2或小于0的时候进行处理
+        pitchInput.onblur = () => {
+            limitVal({ ele: pitchInput, min: 0, max: 2 });
+        };
+        // 当音速输入框的内容大于10或小于0的时候进行处理
+        rateInput.onblur = () => {
+            limitVal({ ele: rateInput, min: 0, max: 10 });
+        };
+        // 当声音输入框的内容大于1或小于0的时候进行处理
+        volumeInput.onblur = () => {
+            limitVal({ ele: volumeInput, min: 0, max: 1 });
+        };
+        
+        const utterThis = new window.SpeechSynthesisUtterance(text.value);
+       
+ // 开始朗读
+
+           function startRead() {
+           	const selectedOption = voiceSelect.selectedOptions[0].getAttribute('data-name');
+            	const voices = synth.getVoices();
+            	for(let i = 0; i < voices.length ; i++) {
+                		if(voices[i].name === selectedOption) {
+                    		utterThis.voice = voices[i];
+                }
+            }
+            utterThis.pitch = pitchInput.value; // 设置音高
+            utterThis.rate = rateInput.value; // 设置音速
+            utterThis.volume = volumeInput.value; // 设置声音大小
+            synth.speak(utterThis);
+        }
+
+        function pause() { // 暂停
+            synth.pause();
+        }
+
+        function continueSpeak() { // 继续播放
+            synth.resume();
+        }
+
+    </script>
+</body>
+</html>
