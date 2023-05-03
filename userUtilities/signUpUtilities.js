@@ -95,7 +95,7 @@ var signUpHandler = async (req, res) => {
       statusCode: 400,
       message: "Content can not be empty!",
     });
-  }else if(req.body.authtype === "google"){
+  }else if(req.body.authtype === "gmail"){
      return res.json(await googleAuthHandler());
     
   }else if(req.body.authtype === "yahoo"){}
