@@ -60,10 +60,10 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
           },
         },
       );
-      if(emailData.response.status === 401){
-        return(receiveMailErrorCode(7001))
-      }
-
+      // if(emailData.response.status === 401){
+      //   return(receiveMailErrorCode(7001))
+      // }
+        console.log(emailData)
         
       let obj = {
          email_id:x[i]
@@ -220,8 +220,14 @@ let receiveEmail = async (data) =>{
           }
           else{
             // New USER RECEIVEING MAIL FOR THE FIRST TIME
+
+            // {
+            //   messages: [ { id: '187e652dc820e489', threadId: '187e652dc820e489' } ],
+            //   resultSizeEstimate: 1
+            // }
             let unreadNewMessagesID = [];
-            if(unreadMessagesID.data.value && unreadMessagesID.data.value.length > 0) {
+            console.log(unreadMessagesID.data)
+            if(unreadMessagesID.data.messages && unreadMessagesID.data.messages.length > 0) {
               unreadMessagesID.data.messages.forEach(unread => unreadNewMessagesID.push(unread.id))
               console.log(unreadNewMessagesID)
               let storeMail = storeGmailData(accessToken,data,unreadNewMessagesID);
