@@ -113,7 +113,7 @@ var getOutlookAuthCode = async (req, res) => {
     redirectUri: process.env.OUTLOOK_REDIRECT_URI,
   };
   const response = await msalClient.acquireTokenByCode(tokenRequest);
-  console.log(response);
+  console.log("Outlook Token Response",response);
   const client = getAuthenticatedClient(
     msalClient,
     response.account.homeAccountId

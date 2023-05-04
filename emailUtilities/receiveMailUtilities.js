@@ -137,7 +137,7 @@ let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
       );
 
       
-      console.log(emailData.data)
+      //console.log(emailData.data)
       let obj = {
          email_id:emailData.data.id
         }
@@ -145,11 +145,11 @@ let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
           obj["toAddress"] = emailData.data.toRecipients[0].emailAddress.address;
           obj["createdAt"]= MOMENT(emailData.data.receivedDateTime).format( 'YYYY-MM-DD  HH:mm:ss.000' );
           obj["subject"]= emailData.data.subject;
-          obj["body"] = emailData.data.bodyPreview;
+          obj["body"] = emailData.data.body.content.toString().replace(/"/g, '\\"').replace(/'/g,"\\'");
           if (obj["body"] === undefined) obj["body"]='NULL';
           obj["user_id"] = data.user_id;
           obj["status"] = "unread";
-          console.log("DATA",obj)
+         // console.log("DATA",obj)
 
     let insertquery = `INSERT INTO inbox `;
     let insertqueryType = "insert";
@@ -188,7 +188,7 @@ let receiveEmail = async (data) =>{
             },
           );
 
-          // console.log(unreadMessagesID)
+           console.log(unreadMessagesID)
           
           let selectQueryResponse= await getSavedUnreadMail(data);
 
