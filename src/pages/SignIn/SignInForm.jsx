@@ -2,15 +2,13 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from '../../utils/validator';
 import classnames from 'classnames';
-//import { setUserObj } from "../../actions/auth";
 import Button from "@mui/material/Button";
 import { PublicClientApplication } from "@azure/msal-browser";
 import { msalConfig, loginRequest } from "./msalConfig";
 import GoogleLogin from 'react-google-login';
+import api from '../../api/index';
 
-//3 provider icons and their response const
-
-//1 google
+// google
 function GoogleIcon() {
   return (
     <img
@@ -21,48 +19,7 @@ function GoogleIcon() {
     />
   );
 }
-
-
-// Add your Google client ID here
-const GOOGLE_CLIENT_ID = 'your-google-client-id.apps.googleusercontent.com';
-
-const responseGoogle = (response) => {
-  console.log(response);
-
-  // Here, you can handle the Google login response, extract user data, and authenticate them in your application.
-};
-
-const GoogleLoginButton = () => (
-  <GoogleLogin
-    clientId={GOOGLE_CLIENT_ID}
-    render={(renderProps) => (
-      <Button
-        variant="contained"
-        startIcon={<GoogleIcon />}
-        onClick={renderProps.onClick}
-        disabled={renderProps.disabled}
-        sx={{ backgroundColor: 'lightgray' }}
-      ></Button>
-    )}
-    buttonText="Login with Google"
-    onSuccess={responseGoogle}
-    onFailure={responseGoogle}
-    cookiePolicy={'single_host_origin'}
-  />
-);
-
-//2yahoo
-function YahooIcon() {
-  return (
-    <imghttp
-      src="https://upload.wikimedia.org/wikipedia/commons/3/3a/Yahoo%21_%282019%29.svg"
-      alt="Yahoo Logo"
-      width="30" 
-      height="30"
-    />
-  );
-}
-//3outlook
+//outlook
 
 const msalInstance = new PublicClientApplication(msalConfig);
 
@@ -101,12 +58,73 @@ const SignInForm = (props) => {
   const [emailAddress1, setEmailAddress1] = useState('');
   const [password1, setPassword1] = useState('');
   const [errors, setErrors] = useState({});
-
+  const { updateUserProfile } = props;
   const navigate = useNavigate();
 
-  const handleProviderLogin = (provider) => {
-    // handle the provider login logic here (Google, Yahoo, Outlook)
-    console.log(`${provider} login clicked`);
+
+  const responseGoogle = async (response) => {
+    console.log(response);
+  
+    if (response && response.accessToken) {
+      try {
+        const result = await fetch('http://localhost:3000/signup/googleoauth', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            code: response.code, // Send the authorization code instead of the access token
+      }),
+    });
+        const data = await result.json();
+  
+        if (data.token) {
+          // Save the token to the local storage or any other state management system
+          localStorage.setItem('token', data.token);
+          // Call the updateUserProfile function to update the user's profile data
+          updateUserProfile(
+            response.profileObj.name,
+            response.profileObj.email,
+            response.profileObj.imageUrl
+          );
+          // Navigate to the dashboard
+          navigate('/receiveMail');
+        } else {
+          console.log('Authentication failed');
+        }
+      } catch (error) {
+        console.error('Error during authentication:', error);
+      }
+    } else {
+      console.log('No access token received');
+    }
+  };
+  
+
+  
+  const GoogleLoginButton = () => {
+    const handleGoogleLogin = async () => {
+      try {
+        const response = await api.getGoogleAuthUrl({ authtype: 'gmail' });
+        const url = response.data.url;
+        if (url) {
+          window.location.href = url;
+        } else {
+          console.log('Error fetching Google authentication URL');
+        }
+      } catch (error) {
+        console.error('Error fetching Google authentication URL:', error);
+      }
+    };
+  
+    return (
+      <Button
+        variant="contained"
+        startIcon={<GoogleIcon />}
+        onClick={handleGoogleLogin}
+        sx={{ backgroundColor: 'lightgray' }}
+      ></Button>
+    );
   };
 
   const onSubmit = (e) => {
@@ -133,9 +151,7 @@ const SignInForm = (props) => {
               msg: 'log in success',
               type: 'success',
             });
-            //props.authActions.asyncSetUserObj(res.data.user);
-            //console.log("User prop:",  res.data.user);
-            navigate('/mailbox');
+            navigate('/receiveMail');
           } else {
             props.flashActions.addFlashMessage({
               id: Math.random().toString().slice(2),
@@ -200,16 +216,16 @@ const SignInForm = (props) => {
       </form>
 
       <form>
-
         <h2>Or sign in with</h2>
         <div className="provider-icons">
-
-
-                <GoogleLoginButton />
-
+                <GoogleLoginButton 
+                  clientId="<YOUR_GOOGLE_CLIENT_ID>"
+                  buttonText="Login with Google"
+                  onSuccess={responseGoogle}
+                  onFailure={responseGoogle}
+                  cookiePolicy={"single_host_origin"}            
+                />                
                 <OutlookLoginButton />
-
-
         </div>
       </form>
     </div>

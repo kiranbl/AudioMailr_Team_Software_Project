@@ -97,3 +97,14 @@ npm install react-google-login @azure/msal-browser
 npm install react-google-login
 
 npm install @azure/msal-browser
+
+
+4/24 update
+
+# mock json server for testing
+
+//installation
+npm install -g json-server
+
+//runs it
+json-server --watch db.json --port 3001

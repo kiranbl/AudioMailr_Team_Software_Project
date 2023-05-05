@@ -20,12 +20,12 @@ const AppRoutes = () => {
   const location = useLocation();
 
   return (
-    <>
-      {location.pathname !== "/mailbox" && <HeaderNav />}
+    <div>
+      {location.pathname !== "/receiveMail" && <HeaderNav />}
       <FlashMessageList />
       <Routes>
         <Route
-          path="/mailbox"
+          path="/receiveMail"
           element={
             <Provider store={mailboxStore}>
               <VAPP />
@@ -35,7 +35,7 @@ const AppRoutes = () => {
         <Route path="/signup" element={<SignUpPage />} />
         <Route path="/" element={<SignInPage />} />
       </Routes>
-    </>
+      </div>
   );
 };
 

@@ -52,8 +52,9 @@ const SignUpForm = (props) => {
         password1: password1,
       })
       .then((res) => {
-        //console.log(res.data);
-        if (res.data.statusCode === 200) {
+        console.log(res.data);
+        //console.log("Status Code:", res.data.statusCode);
+        if (res.data.token) {
           // Sign up successful
           props.flashActions.addFlashMessage({
             id: Math.random().toString().slice(2),

@@ -1,12 +1,11 @@
 import { combineReducers } from "redux";
 import flash from "./flash";
 import auth from "./auth";
-import mailReducer from '../pages/MailBox/features/mailSlice'; 
-
+import inboxApp from "../pages/MailBox/reducers";
 const rootReducer = combineReducers({
     flash,
     auth,
-    mail: mailReducer 
+    mail: inboxApp
 });
 
 export default rootReducer;

@@ -8,6 +8,19 @@ function setUserObj(user){
     }
 }
 
+
+// Fetch user information
+export const fetchUserInformation = () => async (dispatch) => {
+    try {
+     console.log("Fetching user information..."); // Add this line
+      const response = await api.fetchUserInfo();
+      console.log("Server response:", response.data);
+      dispatch(setUserObj(response.data.user));
+    } catch (error) {
+      // Handle errors
+    }
+  };
+
 export function logOut(){
     return dispatch =>{
         dispatch(setUserObj({}))

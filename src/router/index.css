@@ -1,0 +1,9 @@
+.app-container {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .routes-container {
+    margin-top: 1rem;
+  }
+  
