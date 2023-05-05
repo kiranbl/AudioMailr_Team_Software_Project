@@ -1,0 +1,38 @@
+
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+  }
+  
+  .voice-settings {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+  }
+  
+  .voice-settings h1 {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+  
+  .voice-settings label {
+    display: block;
+    clear: both; 
+    margin-bottom: 5px;
+  }
+  
+  .voice-settings input,
+  .voice-settings select {
+    margin-left: 10px;
+  }
+  
+  .voice-settings button {
+    margin: 10px;
+  }
+  
+  .voice-settings textarea {
+    width: 100%;
+    margin-bottom: 10px;
+  }
+  

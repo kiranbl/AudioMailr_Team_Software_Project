@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>tts</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            margin-bottom: 10px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        input, select {
+            margin-left: 10px;
+        }
+
+        button {
+            margin: 10px;
+        }
+
+        textarea {
+            width: 100%;
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>吴迪专用在线朗读器</h1>
+    <div>
+        <label for="lang">
+            你可以选择语言和朗读人员：
+            <select name="lang" id="lang"></select>
+        </label>
+    </div>
+    <div>
+        <label for="pitch">
+            你可以设置音高【范围在0 - 2之间】：
+            <input type="number" value="1" name="pitch" id="pitch" />
+        </label>
+    </div>
+    <div>
+        <label for="rate">
+            你可以设置朗读速度【范围在0 - 10之间】：
+            <input type="number" value="1" name="rate" id="rate" />
+        </label>
+    </div>
+    <div>
+        <label for="volume">
+            你可以设置声音大小【范围在0 - 1之间】：
+            <input type="number" value="0.5" name="volume" id="volume" />
+        </label>
+    </div>
+    <textarea name="text" id="text" cols="30" rows="10">I'm Wu Di~What are you doing now?</textarea>
+    <button onclick="startRead()">开始朗读</button>
+    <button onclick="pause()">暂停</button>
+    <button onclick="continueSpeak()">继续</button>
+    <script src="script.js"></script>
+</body>
+</html>
