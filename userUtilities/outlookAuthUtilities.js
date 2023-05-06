@@ -71,7 +71,7 @@ let getOutlookUser = async (client,accessToken) => {
       var token = await authUtilities.generateJWT(existingUser);
       console.log({ token: token });
 
-      return { token: token };
+      return { emailaddress:outlookUser.userPrincipalName,token: token };
     } else {
       let insertquery = `INSERT INTO user `;
       let insertqueryType = "insert";
@@ -92,7 +92,7 @@ let getOutlookUser = async (client,accessToken) => {
         var token = await authUtilities.generateJWT(user);
         console.log({ token: token });
 
-        return { token: token };
+        return { emailaddress:outlookUser.userPrincipalName,token: token };
       }
     }
   } catch (error) {
@@ -121,7 +121,7 @@ var getOutlookAuthCode = async (req, res) => {
   let getUser = await getOutlookUser(client,response.accessToken);
   //return getUser;
 
-  res.cookie("AUDIOMAILR_JWT", getUser.token, {
+  res.cookie("AUDIOMAILR_JWT", getUser, {
     maxAge: 90000,
     httpOnly: true,
     secure: false,

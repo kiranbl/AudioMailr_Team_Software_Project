@@ -24,10 +24,12 @@ const sendMailHandler = require("../emailUtilities/sendMailUtilities.js");
 const {sentMailHandler} = require("../emailUtilities/sentMailUtilities.js");
 const receiveMailHandler = require("../emailUtilities/receiveMailUtilities");
 const getAllMailHandler = require("../emailUtilities/getMailUtilities");
+const setMailStatusHandler = require("../emailUtilities/mailStatusUtilities");
 router.get("/getallmail",(req, res) => authHandler.authHandler(req,res,next),(req, res) => {getAllMailHandler(req,res)});
 router.get("/receivemail",(req, res,next) => authHandler.authHandler(req,res,next),(req, res) => {receiveMailHandler(req,res)});
 router.post("/sendmail",(req, res,next) => authHandler.authHandler(req,res,next),(req, res) => {sendMailHandler(req,res)});
 router.get("/sent",(req, res,next) => authHandler.authHandler(req,res,next),(req, res) => {sentMailHandler(req,res)});
+router.post("/setMailStatus",(req, res,next) => authHandler.authHandler(req,res,next),(req, res) => {setMailStatusHandler(req,res)});
 
 
 module.exports = router;

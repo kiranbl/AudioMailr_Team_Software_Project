@@ -74,7 +74,7 @@ let getGoogleUser = async (code)=> {
       console.log({token:token});
 
     
-      return { token: token };
+      return { emailaddress:googleUser.data.email,token: token };
       }
       else{
         let insertquery = `INSERT INTO user `;
@@ -97,7 +97,7 @@ let getGoogleUser = async (code)=> {
           console.log({token:token});
     
 
-          return { token: token };
+          return { emailaddress:googleUser.data.email,token: token };
         }
       }
   }
@@ -118,7 +118,7 @@ var getGoogleAuthCode = async (req,res)=>{
   let code = req.query.code;
   let getUser = await getGoogleUser(code);
 
-  res.cookie("AUDIOMAILR_JWT", getUser.token, {
+  res.cookie("AUDIOMAILR_JWT", getUser, {
     maxAge: 90000,
     httpOnly: true,
     secure: false,

@@ -69,6 +69,42 @@ var queryBuilder = (queryType,data)=>{
         return query;
     }
 
+    if(queryType ==="update"){
+        console.log(data)
+        var updateDataArray =  Object.keys(data.updationData);
+        var dataArray = Object.keys(data.conditionData);
+        var conditionType = data.conditionType? data.conditionType:"AND";
+        var updationQuery = "";
+        var conditionQuery="";
+        if(data.updationData){
+            for(var i=0; i<updateDataArray.length;i++){
+                if(i === updateDataArray.length-1){
+                    updationQuery = updationQuery + `${updateDataArray[i]} = "${data.updationData[updateDataArray[i]]}" `
+                }else{
+                    updationQuery = updationQuery + `${updateDataArray[i]} = "${data.updationData[updateDataArray[i]]}" ,`
+                }
+            }
+        }
+
+        if(dataArray.length>1){
+            for(var i=0; i<dataArray.length;i++){
+                if(i === dataArray.length-1){
+                    conditionQuery = conditionQuery + `${dataArray[i]} = "${data.conditionData[dataArray[i]]}"`
+                }else{
+                    conditionQuery = conditionQuery + `${dataArray[i]} = "${data.conditionData[dataArray[i]]}" ${conditionType} `
+                }
+            }
+        }
+        else{
+            conditionQuery = conditionQuery + `${dataArray[0]} = "${data.conditionData[dataArray[0]]}"`
+        }
+        
+        var query = `${data.tablename} SET ${updationQuery} WHERE ${conditionQuery} `;
+        console.log("UPDATE QUERY ===>>> ",query);
+        return query;
+
+    }
+
 
 }
 
