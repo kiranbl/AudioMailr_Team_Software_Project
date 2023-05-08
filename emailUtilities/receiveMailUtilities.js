@@ -145,7 +145,7 @@ let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
           obj["fromAddress"] = emailData.data.from.emailAddress.address;
           obj["toAddress"] = emailData.data.toRecipients[0].emailAddress.address;
           obj["createdAt"]= MOMENT(emailData.data.receivedDateTime).format( 'YYYY-MM-DD  HH:mm:ss.000' );
-          obj["subject"]= emailData.data.subject;
+          obj["subject"]= emailData.data.subject.toString().replace(/"/g, '\\"').replace(/'/g,"\\'");
           obj["body"] = emailData.data.body.content.toString().replace(/"/g, '\\"').replace(/'/g,"\\'");
           if (obj["body"] === undefined) obj["body"]='NULL';
           obj["user_id"] = data.user_id;
