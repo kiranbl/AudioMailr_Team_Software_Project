@@ -42,6 +42,17 @@ let getSavedUnreadMail =async (data)=>{
   
 }
 
+let gmailBodyPart = (parts) =>{
+  //console.log("reached here")
+  //console.log(parts)
+  if(parts[0].body.size === 0){
+    //console.log("reached inside if")
+    return gmailBodyPart(parts[0].parts)
+  }else{
+    return parts[0].body.data
+  }
+}
+
 let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
   try{
     console.log(data)
@@ -94,12 +105,22 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
             obj["subject"]= h.value.toString().replace(/"/g, '\\"').replace(/'/g,"\\'")
         }
       })
+      if(emailData.data.payload.parts){
+        obj["body"]=gmailBodyPart(emailData.data.payload.parts);
+        obj["body"]=Buffer.from( obj["body"],'base64').toString('ascii')
 
-      obj["body"] = (emailData.data.payload.parts)?emailData.data.payload.parts[0].body.data:emailData.data.payload.body.data;
+      }
+      else{
+        obj["body"] =Buffer.from(emailData.data.payload.body.data,'base64').toString('ascii')
+      }
+      //console.log(emailData.data.payload.parts[0].parts[0].parts[0])
+      //obj["body"] = (emailData.data.payload.parts)?Buffer.from(emailData.data.payload.parts[0].body.data,'base64').toString('ascii'):Buffer.from(emailData.data.payload.body.data,'base64').toString('ascii');
+      obj["body"] = obj["body"].replace(/"/g, '\\"').replace(/'/g,"\\'");
       if (obj["body"] === undefined) obj["body"]='NULL';
 
       obj["user_id"] = data.user_id;
       obj["status"] = "unread";
+      
       console.log("DATA",obj)
 
     let insertquery = `INSERT INTO inbox `;
@@ -133,6 +154,7 @@ let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            Prefer: 'outlook.body-content-type="text"'
           },
         },
       );
@@ -150,7 +172,7 @@ let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
           if (obj["body"] === undefined) obj["body"]='NULL';
           obj["user_id"] = data.user_id;
           obj["status"] = "unread";
-         // console.log("DATA",obj)
+          console.log("DATA",obj)
 
     let insertquery = `INSERT INTO inbox `;
     let insertqueryType = "insert";
