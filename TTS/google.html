@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Text-to-Speech Example</title>
+    <style>
+        /* Add your CSS styling here */
+    </style>
+</head>
+<body>
+    <div>
+        <label for="input-text">Text:</label>
+        <textarea id="input-text" rows="4" cols="50"></textarea>
+    </div>
+    <div>
+        <label for="speaker-select">Speaker:</label>
+        <select id="speaker-select"></select>
+    </div>
+    <div>
+        <button id="play-button">Play</button>
+        <button id="pause-button">Pause</button>
+    </div>
+    <script>
+        const API_KEY = 'AIzaSyB-q__QKEut_BBcX3YmaPjynkZscWDqt4Y';
+
+        const inputText = document.getElementById('input-text');
+        const speakerSelect = document.getElementById('speaker-select');
+        const playButton = document.getElementById('play-button');
+        const pauseButton = document.getElementById('pause-button');
+
+        let audio = new Audio();
+        let audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        let audioBuffer = null;
+        let audioBufferSource = null;
+        let audioPauseTime = 0;
+
+        async function fetchVoices() {
+            const response = await fetch(`https://texttospeech.googleapis.com/v1/voices?key=${API_KEY}`);
+            const data = await response.json();
+            const voices = data.voices;
+
+            voices.forEach(voice => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.languageCodes[0]})`;
+                option.value = voice.name;
+                speakerSelect.appendChild(option);
+            });
+        }
+
+        async function playSpeech() {
+            if (audioBuffer === null) {
+                const text = inputText.value;
+                const voice = speakerSelect.value;
+
+                const requestBody = {
+                    input: {
+                        text: text
+                    },
+                    voice: {
+                        languageCode: 'en-US',
+                        name: voice
+                    },
+                    audioConfig: {
+                        audioEncoding: 'MP3'
+                    }
+                };
+
+                const response = await fetch(`https://texttospeech.googleapis.com/v1/text:synthesize?key=${API_KEY}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(requestBody)
+                });
+
+                const data = await response.json();
+                const audioData = new Uint8Array(atob(data.audioContent).split('').map(c => c.charCodeAt(0)));
+
+                audioBuffer = await audioContext.decodeAudioData(audioData.buffer);
+            }
+
+            audioBufferSource = audioContext.createBufferSource();
+            audioBufferSource.buffer = audioBuffer;
+            audioBufferSource.connect(audioContext.destination);
+
+            if (audioPauseTime > 0) {
+                audioBufferSource.start(0, audioPauseTime);
+            } else {
+                audioBufferSource.start();
+            }
+
+            audioBufferSource.onended = () => {
+                audioPauseTime = 0;
+                audioBuffer = null;
+            };
+        }
+                    function pauseSpeech() {
+            if (audioBufferSource) {
+                audioBufferSource.stop();
+                audioPauseTime = audioContext.currentTime;
+            }
+        }
+
+        function resumeSpeech() {
+            if (audioPauseTime > 0) {
+                playSpeech();
+            }
+        }
+
+        fetchVoices();
+
+        playButton.addEventListener('click', () => {
+            if (audioPauseTime > 0) {
+                resumeSpeech();
+            } else {
+                playSpeech();
+            }
+        });
+
+        pauseButton.addEventListener('click', pauseSpeech);
+    </script>
+</body>
+</html>

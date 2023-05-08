@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Google Text-to-Speech Example</title>
+    <style>
+        /* Add your CSS styling here */
+    </style>
+</head>
+<body>
+    <div>
+        <label for="input-text">Text:</label>
+        <textarea id="input-text" rows="4" cols="50"></textarea>
+    </div>
+    <div>
+        <label for="speaker-select">Speaker:</label>
+        <select id="speaker-select"></select>
+    </div>
+    <div>
+        <button id="play-button">Play</button>
+        <button id="pause-button">Pause</button>
+    </div>
+    <script>
+        const API_KEY = 'AIzaSyB-q__QKEut_BBcX3YmaPjynkZscWDqt4Y';
+
+        const inputText = document.getElementById('input-text');
+        const speakerSelect = document.getElementById('speaker-select');
+        const playButton = document.getElementById('play-button');
+        const pauseButton = document.getElementById('pause-button');
+
+        let audio = new Audio();
+
+        function populateVoiceList() {
+            const voices = speechSynthesis.getVoices();
+            voices.forEach(voice => {
+                const option = document.createElement('option');
+                option.textContent = `${voice.name} (${voice.lang})`;
+                option.value = voice.voiceURI;
+                speakerSelect.appendChild(option);
+            });
+        }
+
+        function playSpeech() {
+            const text = inputText.value;
+            const selectedVoiceURI = speakerSelect.value;
+            const utterance = new SpeechSynthesisUtterance(text);
+
+            const selectedVoice = speechSynthesis.getVoices().find(voice => voice.voiceURI === selectedVoiceURI);
+            utterance.voice = selectedVoice;
+
+            speechSynthesis.speak(utterance);
+        }
+
+        function pauseSpeech() {
+            if (speechSynthesis.paused) {
+                speechSynthesis.resume();
+            } else {
+                speechSynthesis.pause();
+            }
+        }
+
+        speechSynthesis.onvoiceschanged = populateVoiceList;
+        playButton.addEventListener('click', playSpeech);
+        pauseButton.addEventListener('click', pauseSpeech);
+    </script>
+</body>
+</html>
