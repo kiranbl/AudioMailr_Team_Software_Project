@@ -124,6 +124,7 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
 let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
   try{
     let x = unreadMessagesID;
+    console.log(accessToken)
     console.log(x.length)
     for(let i=0;i<x.length;i++){
 
@@ -276,7 +277,7 @@ let receiveEmail = async (data) =>{
             
               if(unreadNewMessagesID.length>0){
                 //new unread emails
-                let storeMail = storeOutlookMailData(accessToken,data,unreadNewMessagesID);
+                let storeMail = storeOutlookMailData(data.refreshToken,data,unreadNewMessagesID);
                 if(storeMail.errorcode){
                 return storeMail
                 }
