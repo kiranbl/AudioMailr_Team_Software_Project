@@ -5,7 +5,12 @@ export function getCookieValue(name) {
   
     cookieArray.forEach(cookie => {
       let [key, value] = cookie.split('=');
-      cookieObject[key] = value;
+      const decodedValue = decodeURIComponent(value);
+      if (decodedValue.startsWith('j:')) {
+        cookieObject[key] = decodedValue.slice(2);
+      } else {
+        cookieObject[key] = decodedValue;
+      }
     });
   
     return cookieObject[name];
@@ -14,9 +19,29 @@ export function getCookieValue(name) {
   export const getStorageData = (keyName, defaultValue) => {
     const cookieValue = getCookieValue(keyName);
     if (cookieValue) {
-      // If the cookie is located and its value if valid, return the token
-      return cookieValue;
+      const parsedCookieValue = JSON.parse(cookieValue);
+      return parsedCookieValue.token;
     }
     // Otherwise, it returns the defaultValue
     return defaultValue;
   };
+
+  export const getTokenFromStorage = (keyName, defaultValue) => {
+    const cookieValue = getCookieValue(keyName);
+    if (cookieValue) {
+      const parsedCookieValue = JSON.parse(decodeURIComponent(cookieValue));
+      return parsedCookieValue.token;
+    }
+    return defaultValue;
+  };
+
+  export const getEmailFromStorage = (keyName, defaultValue) => {
+    const cookieValue = getCookieValue(keyName);
+    if (cookieValue) {
+      const parsedCookieValue = JSON.parse(decodeURIComponent(cookieValue));
+      return parsedCookieValue.emailaddress;
+    }
+    return defaultValue;
+  };
+  
+  

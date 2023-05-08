@@ -1,5 +1,3 @@
-
-
 import findIndex from "lodash/findIndex"
 import { ADD_FLASH,DEL_FLASH } from "../constants"
 

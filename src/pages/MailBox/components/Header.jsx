@@ -1,35 +1,67 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import "../css/Header.css";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import { Link } from 'react-router-dom';
-import api from "../../../api/index";
-import { connect, useDispatch } from 'react-redux';
-import { fetchUserInformation } from '../../../actions/auth';
 import Cookie from "js-cookie";
-const Header = ({ user }) => {
-  console.log("User info:", user);
+
+const Header = () => {
   const [dropdownVisible, setDropdownVisible] = useState(false);
-  const dispatch = useDispatch();
-  const toggleDropdown = () => {
-    if (!dropdownVisible) {
-      //dispatch(fetchUserInformation());
+  // Get the email address from local storage
+  const emailaddress = localStorage.getItem("emailaddress");
+  // generation of user info with the emailaddress logic
+  const renderEmailAddress = () => {
+    let icon, displayEmail;
+
+    if (emailaddress.endsWith("@gmail.com")) {
+      icon = <GoogleIcon />;
+      displayEmail = emailaddress.replace("@gmail.com", "");
+    } else if (emailaddress.endsWith("@outlook.com")) {
+      icon = <OutlookIcon />;
+      displayEmail = emailaddress.replace("@outlook.com", "");
+    } else {
+      displayEmail = emailaddress;
     }
+    return (
+      <>
+        {icon}
+        {displayEmail}
+      </>
+    );
+  };
+
+  function GoogleIcon() {
+    return (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/53/Google_%22G%22_Logo.svg/512px-Google_%22G%22_Logo.svg.png"
+        alt="Google G Logo"
+        width="15" 
+        height="15"
+      />
+    );
+  }
   
+  //const msalInstance = new PublicClientApplication(msalConfig);
+  
+  function OutlookIcon() {
+    return (
+      <img
+        src="https://upload.wikimedia.org/wikipedia/commons/d/df/Microsoft_Office_Outlook_%282018%E2%80%93present%29.svg"
+        alt="Outlook Logo"
+        width="15" 
+        height="15"
+      />
+    );
+  }
+  const toggleDropdown = () => { 
     setDropdownVisible(!dropdownVisible);
   };
+
   const UserProfileButton = () => {
     return (
       <button className="user-profile-button" onClick={toggleDropdown}>
-      {user.profileImage ? (
-        <img
-        src={user.profileImage}
-        alt="User Profile"
-        className="user-profile-image"
-      />
-      ) : (
+     
         <AccountCircleIcon fontSize="large" />
-      )}
     </button>
     );
   };
@@ -44,16 +76,13 @@ const Header = ({ user }) => {
   const UserDropdown = () => {
     return (
       <div className="user-dropdown">
-        <div className="user-profile-info">
-          <h4>{user.name}</h4>
-          <p>{user.email}</p>
-        </div>
+        <div className="user-dropdown-title">{renderEmailAddress()}</div> 
         <ul>
         <li>
-          <Link to="/">Return to Log in</Link>
+          <Link to="/">Return to Entrance</Link>
         </li>
         <li>
-          <Link to="/" onClick={handleLogout}>Logout Gmail Account</Link>
+          <Link to="/" onClick={handleLogout}>Logout Account</Link>
         </li>
         {/* Add more options as needed */}
       </ul>
@@ -75,12 +104,4 @@ const Header = ({ user }) => {
   );
 };
 
-const mapStateToProps = (state) => {
-    return {
-      user: state.auth && state.auth.user ? state.auth.user : {},
-    };
-  };
-  
-  
-
-export default connect(mapStateToProps)(Header);
+export default Header;

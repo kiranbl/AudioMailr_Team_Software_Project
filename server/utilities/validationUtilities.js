@@ -9,6 +9,8 @@ var validationErrorCode = (statusCode)=>{
         case 1002: return ({"errorcode":statusCode,"message": "Invalid Password, Should be minimum 8 character"});
         case 1003: return ({"errorcode":statusCode,"message": "Subject for the email cannot be empty"});
         case 1004: return ({"errorcode":statusCode,"message": "Body of the email cannot be empty"});
+        case 1005: return ({"errorcode":statusCode,"message": "Email ID Error"});
+        case 1006: return ({"errorcode":statusCode,"message": "Mail Status Error"});
     }
 }
 
@@ -81,8 +83,25 @@ var emailValidator = (body)=>{
 
 }
 
+var mailStatusValidator = (body)=>{
+
+    var rules = {
+        mailid: 'required',
+        status:'required'
+    }
+
+    var validation = new Validator(body, rules);
+    if (validation.fails()) {
+    if(validation.errors.first('mailid')){
+        return(validationErrorCode(1005))
+    }
+    }
+
+}
+
 module.exports ={
     signUpValidator,
     signInValidator,
-    emailValidator
+    emailValidator,
+    mailStatusValidator
 }

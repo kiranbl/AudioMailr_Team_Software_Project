@@ -1,4 +1,8 @@
-.sidebarOption{
+body, html {
+    margin: 0;
+    padding: 0;
+ }
+ .sidebarOption{
   
     position: relative;
     display: flex;

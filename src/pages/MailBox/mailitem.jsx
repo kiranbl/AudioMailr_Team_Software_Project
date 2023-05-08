@@ -1,5 +1,5 @@
 import React from 'react';
-import styles from "./css/maillist.scss";
+import styles from "./css/maillist.css";
 import { getprettytime } from './utils/timeutils';
 
 
@@ -13,7 +13,6 @@ const addFormat = (address) => {
 };
 
 const MailItem = ({ selectedEmailID, mail, openmail }) => {
-  console.log('MailItem - mail:', mail); // Add this line
   const display = mail.read === 'false' ? 'inline-block' : 'none';
   return (
     <li

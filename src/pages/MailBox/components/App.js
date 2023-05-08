@@ -8,55 +8,54 @@ import VComposePart from '../containers/vcomposepart';
 import { connect } from 'react-redux';
 import MAILS from '../inbox.json';
 import api from '../../../api/index';
-import { getStorageData } from "../utils/utils";
-import SignInForm from '../../SignIn/SignInForm';
+import { getTokenFromStorage } from "../utils/utils";
+import { getEmailFromStorage } from "../utils/utils";
 import { setEmails } from "../../../constants/index";
 import { Buffer } from 'buffer';
+import * as authActions from "../../../actions/auth";
+import * as flashActions from "../../../actions/flash";
+import { bindActionCreators } from "redux";
 //decode function for gmail  base64 body
 function base64Decode(str) {
-  return Buffer.from(str, 'base64').toString('utf-8');
+  try {
+    return Buffer.from(str, 'base64').toString('utf-8');
+  } catch (error) {
+    console.error('Error decoding base64:', error);
+    return str;
+  }
 }
 //mailbox dashboard page and its components
 class Mailbox extends Component {
-  state = {
-    userProfile: {
-      name: "",
-      email: "",
-      profileImage: "",
-    },
-  };
-
-  updateUserProfile = (name, email, profileImage) => {
-    this.setState({
-      userProfile: {
-        name,
-        email,
-        profileImage,
-      },
-    });
-  };
-  
-   fetchEmails = async () => {
+   
+  fetchEmails = async () => {
     try {
       const response = await api.fetchEmails();
       console.log('API response:', response);
       console.log(response); // Log the entire response object
       if (response && response.data) {
-        // Transform the Gmail emails to match the expected format
-        const transformedEmails = response.data.map(
-          (
-          email, 
-          //index
-          ) => {
-        // Decode base64 encoded body
-          const decodedBody = base64Decode(email.body);        
+        // Transform the emails to match the expected format
+        const transformedEmails = response.data.map((email) => {
+          let decodedBody;
+          // Check if the email is from Gmail or Outlook and decode accordingly
+          if (email.toAddress.includes("@gmail.com")) {
+            // Decode base64 encoded body for Gmail
+            decodedBody = base64Decode(email.body);
+          } else if (email.toAddress.includes("@outlook.com")) {
+            // Use the HTML body directly for Outlook
+          //  decodedBody = extractTextFromHtml(email.body);
+          //} else {
+            // For other cases, use the original body
+            decodedBody = email.body;
+          }
+  
           return {
-            //id: index,
-            from: email.fromAddress, 
-            address: email.toAddress, 
-            time: email.createdAt, 
-            message: decodedBody, 
-            subject: email.subject, 
+            email_id: email.email_id,
+            from: email.fromAddress,
+            address: email.toAddress,
+            time: email.createdAt,
+            message: decodedBody,
+            //message: email.body,
+            subject: email.subject,
             read: email.status === "read" ? "true" : "false",
             tag: "inbox",
           };
@@ -69,16 +68,59 @@ class Mailbox extends Component {
       console.error('Error fetching emails:', error);
     }
   };
+  
+  fetchSentEmails = async () => {
+    try {
+      const response = await api.fetchSentEmails();
+      console.log('API response (sent):', response);
+      if (response && response.data) {
+        const transformedEmails = response.data.map((email) => {
+          return {
+            from: email.fromAddress,
+            address: email.toAddress,
+            time: email.createdAt,
+            message: email.body,
+            subject: email.subject,
+            read: "ture",
+            tag: "sent",
+          };
+        });
+        return transformedEmails;
+      } else {
+        console.error('Error fetching sent emails: Invalid server response');
+      }
+    } catch (error) {
+      console.error('Error fetching sent emails:', error);
+    }
+  };
+  async handleMarkAsRead(mail_id) {
+    try {
+      await api.setMailStatus(mail_id);
+      const inboxEmails = await this.fetchEmails();
+      const sentEmails = await this.fetchSentEmails();
+      const mails = [...inboxEmails, ...sentEmails];
+      this.props.setEmails(mails);
+      console.log('updated mails:', mails);
+    } catch (error) {
+      console.error('Error setting mail status and fetching emails:', error);
+    }
+  }
   async componentDidMount() {
 
-    let token = getStorageData("AUDIOMAILR_JWT", "NoToken");
-    console.log(token);
-
+    const token = getTokenFromStorage("AUDIOMAILR_JWT", "NoToken");
+    const emailaddress = getEmailFromStorage("AUDIOMAILR_JWT", "");
+    console.log("Extracted email address:", emailaddress);
+    console.log("extract token:",token);
+    localStorage.setItem("emailaddress", emailaddress);  // Save the email address to local storage
     if (token !== "NoToken") {
       //if success, apply the fetch gmaildata functions from backend
       //const mails = await fetchEmailsFromBackend();
-      const mails = await this.fetchEmails();
-      console.log('display transformed gmails:',mails);
+      const inboxEmails = await this.fetchEmails();
+      const sentEmails = await this.fetchSentEmails();
+      const mails = [...inboxEmails, ...sentEmails];
+      console.log('display inbox mails:',mails);
+      console.log('display sent mails:',mails);
+      console.log('display transformed mails):', mails);
       console.log('display local mails:',MAILS.mails);
       this.props.setEmails(mails);
     } else {
@@ -89,16 +131,14 @@ class Mailbox extends Component {
     }
   }
   render() {
-    const { userProfile } = this.state;
     return (
       <div className="app">
-        {/* Pass the userProfile object to the Header component */}
-          <Header userProfile={userProfile} />
+          <Header />
         <div className="app__body">
           <VSidebar />
           <VMailList />
-          <VMailDetail />
-          <VComposePart />
+          <VMailDetail handleMarkAsRead={this.handleMarkAsRead.bind(this)} />
+          <VComposePart flashActions={this.props.flashActions} />
         </div>
       </div>
     );
@@ -110,6 +150,8 @@ class Mailbox extends Component {
     setEmails: (mails) => {
     dispatch(setEmails(mails));
      },
+    authActions: bindActionCreators(authActions, dispatch),
+    flashActions: bindActionCreators(flashActions, dispatch),
    };
  };
 

@@ -1,0 +1,46 @@
+.maillist {
+  position: relative;
+  width: 250px;
+  height: auto;
+  background-color: #eee;
+}
+
+.buttons {
+  position: fixed;
+  padding-left: 10px;
+  width: 250px;
+  background-color: #eee;
+  height: 40px;
+}
+
+.buttons button {
+  text-align: center;
+  border-top: none;
+  border-left: none;
+  border-right: none;
+  outline: 0;
+  width: 60px;
+  background: none;
+  height: 40px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.button {
+  flex: 1;
+  padding: 8px;
+  font-size: 16px;
+  cursor: pointer;
+  border: none;
+  color: white;
+  background-color: red;
+  transition: background-color 0.3s;
+}
+
+.button:hover {
+  background-color: darkred;
+}
+
+.button.selected {
+  background-color: blue;
+}

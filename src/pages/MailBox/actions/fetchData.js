@@ -45,7 +45,7 @@ export function postData(url, address, message, subject){
                 'Content-Type': 'application/json'
             },
             body: JSON.stringify({
-                "from" : "kiran",
+                "from" : "zhengren prototype",
                 "address" : address,
                 "time": timeFormat(new Date()),
                 "message" : message,
@@ -91,21 +91,6 @@ export const toggleReadStatus = (id) => ({
   type: TOGGLE_READ_STATUS,
   id
 });
-
-//delete data (json-server 'delete')
-export function deleteData(url, id){
-    return (dispatch) => {
-        const urlid = url+'/'+id;
-        fetch(urlid, {
-            method: 'delete',
-        })
-        .then((response) => response.json())
-        .then((mails) => dispatch(mailsFetchDataSuccess(mails)))
-        .catch(() => dispatch(mailsHasErrored(true)));
-    }
-}
-
-
 
 function timeFormat(time){
     const timepart = time.toTimeString().split(' ')[0]

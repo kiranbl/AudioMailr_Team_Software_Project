@@ -5,37 +5,6 @@ const dbUtilities = require("../utilities/dbUtilities");
 const authUtilities = require("../utilities/authUtilities");
 const MOMENT= require( 'moment' );
 
-
-
-
-//zhengren added this function for user profile display function
-const getUserInfo = async (userId) => {
-  try {
-    const data = {
-      conditionData: {
-        user_id: userId,
-      },
-      selectionData: ["userName", "emailAddress1"],
-      tablename: "user",
-    };
-
-    let selectQuery = `SELECT `;
-    let generatedSelectQuery = dbQueryUtilities.queryBuilder("select", data);
-    selectQuery = selectQuery + generatedSelectQuery;
-
-    const selectQueryResponse = await dbUtilities.selectQuery(selectQuery);
-
-    if (selectQueryResponse && selectQueryResponse.length > 0) {
-      return selectQueryResponse[0];
-    } else {
-      throw new Error("User not found");
-    }
-  } catch (error) {
-    console.error("Error fetching user info:", error);
-    return null;
-  }
-};
-
 var googleAuthErrorCode = (statusCode) => {
   switch (statusCode) {
     case 2000:
@@ -102,9 +71,10 @@ let getGoogleUser = async (code)=> {
         createdAt:selectQueryResponse[0].createdAt
       }
       var token = await authUtilities.generateJWT(existingUser);
+      console.log({mailaddress:googleUser.data.email});
       console.log({token:token});
-
-      return { token: token };
+      //return { token: token };
+      return { emailaddress:googleUser.data.email,token: token };
       }
       else{
         let insertquery = `INSERT INTO user `;
@@ -124,15 +94,19 @@ let getGoogleUser = async (code)=> {
          user["user_id"]=queryResponse.insertId;
          user["createdAt"]=user.createdAt;
           var token = await authUtilities.generateJWT(user);
+          console.log({mailaddress:googleUser.data.email});
           console.log({token:token});
     
 
-          return { token: token };
+          //return { token: token };
+          
+          return { emailaddress:googleUser.data.email,token: token };
         }
       }
   }
   catch(error){
     console.log("ERROR ===>>",error);
+    return { error: true, message: 'An error occurred while fetching Outlook user information.' };
   }
  
 }
@@ -149,11 +123,11 @@ var getGoogleAuthCode = async (req,res)=>{
   let getUser = await getGoogleUser(code);
   //return getUser;
 
-  res.cookie("AUDIOMAILR_JWT", getUser.token, {
+  res.cookie("AUDIOMAILR_JWT", getUser,//.token, 
+  {
     maxAge: 90000,
-    httpOnly: false,
-    //secure: false,
-    secure: process.env.NODE_ENV === 'production', // Set 'secure' to true only in production
+    httpOnly: false,//changed this to false because js does not agree with httpOnly at all 
+    secure: process.env.NODE_ENV === 'production', //secure: false, Set 'secure' to true only in production 
     sameSite: 'strict', // This attribute helps to prevent CSRF attacks
     path: '/', // The path attribute should be set to '/' so that the cookie is accessible on all pages
   });

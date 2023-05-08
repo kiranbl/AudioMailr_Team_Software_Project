@@ -90,6 +90,7 @@ let transportMail = async (data,emailTemplate) =>{
   });
 
   console.log("ERRORRRR SEND OUTLOOK",sendOutlookMail);
+  
   if(sendOutlookMail.status === 202){
   return sendOutlookMail;
   }

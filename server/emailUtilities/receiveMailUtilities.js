@@ -42,6 +42,17 @@ let getSavedUnreadMail =async (data)=>{
   
 }
 
+let gmailBodyPart = (parts) =>{
+  //console.log("reached here")
+  //console.log(parts)
+  if(parts[0].body.size === 0){
+    //console.log("reached inside if")
+    return gmailBodyPart(parts[0].parts)
+  }else{
+    return parts[0].body.data
+  }
+}
+
 let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
   try{
     console.log(data)
@@ -94,12 +105,22 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
             obj["subject"]= h.value.toString().replace(/"/g, '\\"').replace(/'/g,"\\'")
         }
       })
+      if(emailData.data.payload.parts){
+        obj["body"]=gmailBodyPart(emailData.data.payload.parts);
+        obj["body"]=Buffer.from( obj["body"],'base64').toString('ascii')
 
-      obj["body"] = (emailData.data.payload.parts)?emailData.data.payload.parts[0].body.data:emailData.data.payload.body.data;
+      }
+      else{
+        obj["body"] =Buffer.from(emailData.data.payload.body.data,'base64').toString('ascii')
+      }
+      //console.log(emailData.data.payload.parts[0].parts[0].parts[0])
+      //obj["body"] = (emailData.data.payload.parts)?Buffer.from(emailData.data.payload.parts[0].body.data,'base64').toString('ascii'):Buffer.from(emailData.data.payload.body.data,'base64').toString('ascii');
+      obj["body"] = obj["body"].replace(/"/g, '\\"').replace(/'/g,"\\'");
       if (obj["body"] === undefined) obj["body"]='NULL';
 
       obj["user_id"] = data.user_id;
       obj["status"] = "unread";
+      
       console.log("DATA",obj)
 
     let insertquery = `INSERT INTO inbox `;
@@ -124,6 +145,7 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
 let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
   try{
     let x = unreadMessagesID;
+    console.log(accessToken)
     console.log(x.length)
     for(let i=0;i<x.length;i++){
 
@@ -132,20 +154,21 @@ let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
         {
           headers: {
             Authorization: `Bearer ${accessToken}`,
+            Prefer: 'outlook.body-content-type="text"'
           },
         },
       );
 
       
-      console.log(emailData.data)
+      //console.log(emailData.data)
       let obj = {
          email_id:emailData.data.id
         }
           obj["fromAddress"] = emailData.data.from.emailAddress.address;
           obj["toAddress"] = emailData.data.toRecipients[0].emailAddress.address;
           obj["createdAt"]= MOMENT(emailData.data.receivedDateTime).format( 'YYYY-MM-DD  HH:mm:ss.000' );
-          obj["subject"]= emailData.data.subject;
-          obj["body"] = emailData.data.bodyPreview;
+          obj["subject"]= emailData.data.subject.toString().replace(/"/g, '\\"').replace(/'/g,"\\'");
+          obj["body"] = emailData.data.body.content.toString().replace(/"/g, '\\"').replace(/'/g,"\\'");
           if (obj["body"] === undefined) obj["body"]='NULL';
           obj["user_id"] = data.user_id;
           obj["status"] = "unread";
@@ -188,7 +211,7 @@ let receiveEmail = async (data) =>{
             },
           );
 
-          // console.log(unreadMessagesID)
+           console.log(unreadMessagesID)
           
           let selectQueryResponse= await getSavedUnreadMail(data);
 
@@ -276,7 +299,7 @@ let receiveEmail = async (data) =>{
             
               if(unreadNewMessagesID.length>0){
                 //new unread emails
-                let storeMail = storeOutlookMailData(accessToken,data,unreadNewMessagesID);
+                let storeMail = storeOutlookMailData(data.refreshToken,data,unreadNewMessagesID);
                 if(storeMail.errorcode){
                 return storeMail
                 }

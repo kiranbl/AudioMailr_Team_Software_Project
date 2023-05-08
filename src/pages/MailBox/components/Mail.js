@@ -1,35 +1,28 @@
 //This component handles the detailed form of emails
 import React, { useState } from "react";
-import $ from 'jquery'
-import styles from '../css/maildetail.css'
-import MailOutlineIcon from '@mui/icons-material/MailOutline';
+import styles from '../css/Mail.css'
 import DraftsIcon from '@mui/icons-material/Drafts';
 import VoiceSettings from "./VoiceSettings";
 import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { getprettytime } from '../utils/timeutils';
-
-
+import RefreshIcon from '@mui/icons-material/Refresh';
+import TimeStorage from "./alarmEmailr/reactform/TimeStorage"
 const MailDetail = ({
 	mails, 
 	selectedEmailID, 
 	display,
-	handlecompose,
-	markAsRead,
-	markAsUnread, 
+	handleMarkAsRead,
 }) => {
-	console.log('MailDetail - selectedEmailID:', selectedEmailID); // check if email is selected
-	
 	// Add state for voice settings visibility
 	const [voiceSettingsVisible, setVoiceSettingsVisible] = useState(false);
-
 	// Add function to toggle visibility of voice settings
 	const toggleVoiceSettings = () => {
 	  setVoiceSettingsVisible(!voiceSettingsVisible);
 	};
-  
+	
 	const readAllUnreadEmails = async () => {
 		// Filter the unread emails
-		const unreadEmails = mails.filter(mail => mail.read === "false");
+		const unreadEmails = mails.filter(mail => mail.read === "false" && mail.tag === "inbox");
 		console.log("display all the emails:",mails )
 	    console.log("filtered emails:",unreadEmails )
 		// Iterate through the unread emails and call speakText() for each email
@@ -80,7 +73,6 @@ const MailDetail = ({
 	if(selectedEmailID === null){return <div className={styles.nothing} style={{display:display}}/>}
 	const selected = mails[selectedEmailID];
 
-	let subject, message,address;
 	return (
 		<div className = {styles.maildetail} style={{display:display}}>
 			<div className ={styles.title}>
@@ -88,65 +80,42 @@ const MailDetail = ({
 				<p className={styles.address}>Received by: {selected.address}</p>
 				<p className={styles.subject}>Title: {selected.subject}</p>
 				<span>Time: {getprettytime(selected.time)}</span>
-			
+				<div >
+					{selected.message}
+				</div>
+				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
 				<button onClick={() => {
-					console.log('Mark as unread button clicked');
-  					markAsUnread(selectedEmailID);
+					console.log('selected Email:',selected);
+					console.log('selected Email:',selected.email_id);
+					// Call the handleMarkAsRead method and pass the selected email's ID
+					handleMarkAsRead(selected.email_id); 
 				}}>
-  				<MailOutlineIcon />
-  					Mark as unread
+					<DraftsIcon />
+					Move Email to Read List
 				</button>
-
-				<button onClick={() => {
-					console.log('Mark as read button clicked');
- 					 markAsRead(selectedEmailID);
-				}}>
-  				<DraftsIcon />
-  					Mark as read
+				<button onClick={() => window.location.reload()} style={{ marginLeft: '0px' }}> 
+				<RefreshIcon />Refresh MailList
 				</button>
-
 				<button
  					 onClick={() => {
    					 speakText(selected.message);
   					}}
 				>
   				<VolumeUpIcon />
- 				 Read for me with selected voice settings
+ 				 Read Email with Selected Voice 
 				</button>
 				<button
  					onClick={() => {
-						console.log('Mark as read button clicked');
 						readAllUnreadEmails();
 					  }}
 				>
   				<VolumeUpIcon />
- 				 Read all unread Emails
+ 				 Read all Unread Emails
 				</button>
-				
-				
+			</div>				
 			</div>
-			<div className={styles.background}>
-			<div className = {styles.body}>
-			{selected.message}
-			</div>
-			<div className = {styles.reply}>
-				<form onSubmit = {(e) => {e.preventDefault();
-					if(!message.value.trim()){return;}
-					const subject = 'reply:'+ selected.subject;
-					const messageV = message.value;
-					setTimeout(function(){	
-						handlecompose('../inbox.json',selected.address, messageV, subject);	
-						$('#check').fadeIn(800).fadeOut(300);
-					},1500)
-					message.value ='';
-				}}>
-				<br/>
-				<div className={styles.success} id = 'check'>
-					<i className='check-circle' />
-				</div>
-				<textarea cols='75' rows='5'  ref={v => message = v} />
-				<input className ={styles.send} type ='submit' value='Reply'/>
-				</form>
+			<div >
+			<div >
 				<button onClick={toggleVoiceSettings}>Voice Settings</button>
 					{voiceSettingsVisible && (
 						<VoiceSettings
@@ -158,14 +127,15 @@ const MailDetail = ({
 						setVolume={setVolume}
 						selectedVoice={selectedVoice}
 						setSelectedVoice={setSelectedVoice}
-						voices={voices} // Add this line
-						populateVoices={populateVoices} // Add this line
+						voices={voices} 
+						populateVoices={populateVoices} 
 					/>
 					)}
+
+				<TimeStorage readAllUnreadEmails={readAllUnreadEmails} />
 			</div>
 			</div>
 		</div>
-
 			);
 }
 

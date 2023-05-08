@@ -39,21 +39,19 @@ signup & signin function completed.
 
 ## Update 5-5:
 
-After mergeing with back-end, now the most tricky part of this project is cleared
+After complete mergeing with back-end, now the most tricky part of this project is cleared
 
 Now frond-end and back-end are well connected, the gamil part is nearly done
 
-I will update the entire project on my end which includes the both end today
-
-if you want to test it on your end, make sure you have your local database ready
+From now on, my branch will be including both front-end and server-end
 
 I have included the a doc called "table" on the root, which contains the database set up
 
 If you have any doubts about this instruction file, speak to kiran, he made it
 
-I know there is still some work to do, code is not completed at all, but I hope this update give all of us an overrall understanding of what we have done so far
+The back end code is slightly different from the one on kiran's or leyan's
 
-The back end code is slightly different from the one on kiran's or leyan's. Don't worry, the changes I made will not cause any issues
+I have commented most of the changes
 
 Below I will demonstrate the brief work flow of the project
 
@@ -93,7 +91,7 @@ status: receive checked, now doing send, hopefully finish it on 5/6 or 5/7
 approach of receive: for receive, as mentioned before, if user logs in the app with google or outlook account,
 this app automatically pulls all the "unread" emails from their inbox with an api get request;
 for send, app applies a post request
-approach of receive: user should be able to send emails with the app, and the sent email should be visiable in the 
+approach of send: user should be able to send emails with the app, and the sent email should be visiable in the 
 sent box.
 
 2. The application shall make use of IMAP and SMTP protocols to achieve requirement 1 above
@@ -147,16 +145,50 @@ click compse mail
     "message": "Mail has been sent to kiran.pro13@gmail.com successfully.."
 }
 
-## Basically, the front-end work can be divided into 2 parts.
-
-1. connection with back-end, make api calls for get/post methods, etc ——Zhengren
-
-2. UI & mailbox functionalities e.g. text-speech script, alarm clock but read emails, etc —— Jianing & vijay
 
 
+## Update 5-8:
 
 
+# featurelist of this project (we need to do 8 out of 9)
 
+1. The application shall act as an email client, where a user is allowed to send or receive emails.
+status: check
 
+2. The application shall make use of IMAP and SMTP protocols to achieve requirement 1 above
+status: check
+
+3. The application shall allow a user to login using their email and password.
+status: check
+approach: after discussion, we decided to remove the sign up and log in system we made from our main entrance, since
+it does not really help our app meet the requirements
+however we kept it as a prototype as part of our work
+
+4. The application shall allow a user to indicate what emails they need to be read to them
+status: check
+approach: User can do that by opening one mail and then clicking "read" button
+
+5. The user shall have the ability to select the preferred voice from a list of 2-3.
+status: check
+approach: User can do that by opening one mail and then adjust the voice perferences on "Settings" button
+
+6. The application shall allow the user to select what if all unread emails in the Inbox should be read
+status: check
+approach: User can do that by opening one mail and then clicking "read all unread emails" button
+
+7. The application shall allow a user to select specific times when emails should be read. E.g. Read all unread
+emails to me by 5pm
+status: check
+
+8. The application shall be able to work with multiple email addresses. E.g. - Work email and personal email.
+status: check
+approach: google + outlook on same portal
+
+9. The application shall be able to work with any email provider that supports IMAP and SMTP.
+status: we instantly give up on this one, which is more of a joke than feature
+
+added:
+mark as read fucntion for user to actually change the status of emails from the remote inbox
+by this mean, user now has full control of email list
 
 
