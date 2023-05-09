@@ -120,7 +120,7 @@ var getGoogleAuthCode = async (req,res)=>{
 
   res.cookie("AUDIOMAILR_JWT", getUser, {
     maxAge: 90000,
-    httpOnly: true,
+    httpOnly: false,
     secure: false,
   });
 
