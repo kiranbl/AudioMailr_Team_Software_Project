@@ -69,8 +69,17 @@ const api = {
               console.log('Sending email with data:', data);
               return axios
                 .post(base.baseUrl + base.sendmail, data, config)
-            };
-          },    
+                .then(response => {
+                  if (response.status === 200) {
+                    alert("Email sent!");
+                  }
+                })
+                .catch(error => {
+                  console.error('Error occurred:', error);
+                  alert('Failed to send email!');
+                });
+              };
+            },    
           setMailStatus(mail_id) {
             const config = {
               headers: {

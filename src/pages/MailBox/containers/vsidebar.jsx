@@ -25,11 +25,14 @@ const VSidebar = connect(mapStateToProps,mapDispatchToProps)(Sidebar)
 export default VSidebar
 
 function countunread(mails){
-	const unread = mails.filter(mail => mail.tag === 'inbox' && mail.read === 'false');
-	return unread.length;
+	const unreadinboxcount = (mail => mail.tag === 'inbox' && mail.read === 'false');
+	//const inboxcount = mails.filter(mail => mail.tag === 'inbox');
+	console.log("count inbox:",unreadinboxcount.length)
+	return unreadinboxcount.length;
 }
 
 function countsent(mails){
-	const sent = mails.filter(mail => mail.tag === 'sent')
-	return sent.length
+	const sentcount = mails.filter(mail => mail.tag === 'sent')
+	console.log("count sent:",sentcount.length)
+	return sentcount.length
 }

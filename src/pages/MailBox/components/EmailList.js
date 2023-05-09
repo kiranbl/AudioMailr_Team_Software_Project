@@ -1,7 +1,8 @@
 import React from "react";
 import MailItem from "../mailitem";
 import styles from "../css/maillist.css";
-
+import AllInboxIcon from '@mui/icons-material/AllInbox';
+import MarkunreadIcon from '@mui/icons-material/Markunread';
 const MailList = ({
   searchText,
   selectedEmailID,
@@ -22,14 +23,14 @@ const MailList = ({
   );
   return (
     <div className={styles.maillist} style={{ display: display }}>
-      <div className={styles.buttons}>
+      <div className={styles.buttonContainer}>
         <button
           onClick={() => turnunread(false)}
           className={`${styles.button} ${
             !showunread ? styles.selected : ""
           }`}
         >
-          All
+          <AllInboxIcon/>All the Mails
         </button>
         <button
           onClick={() => turnunread(true)}
@@ -37,7 +38,7 @@ const MailList = ({
             showunread ? styles.selected : ""
           }`}
         >
-          Unread
+         <MarkunreadIcon />Unread Mails
         </button>
       </div>
       <ul>

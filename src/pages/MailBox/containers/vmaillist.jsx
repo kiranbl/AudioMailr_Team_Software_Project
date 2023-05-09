@@ -19,7 +19,7 @@ const mapDispatchToProps = (dispatch) => {
 	return {
 		turnunread: (bool) => {dispatch({type:'TURN_UNREAD', bool})},
 		openmail: (id)=> {
-      console.log('openmail called with id:', id); // Add this line
+      console.log('openmail called with id:', id); 
       dispatch({type: 'OPEN_MAIL', id})
     }
 }

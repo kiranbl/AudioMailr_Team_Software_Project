@@ -7,6 +7,7 @@ import VolumeUpIcon from '@mui/icons-material/VolumeUp';
 import { getprettytime } from '../utils/timeutils';
 import RefreshIcon from '@mui/icons-material/Refresh';
 import TimeStorage from "./alarmEmailr/reactform/TimeStorage"
+import StopIcon from '@mui/icons-material/Stop'; 
 const MailDetail = ({
 	mails, 
 	selectedEmailID, 
@@ -19,7 +20,13 @@ const MailDetail = ({
 	const toggleVoiceSettings = () => {
 	  setVoiceSettingsVisible(!voiceSettingsVisible);
 	};
-	
+	const stopReading = () => {
+		// Check if the speech synthesis is speaking
+		if (window.speechSynthesis.speaking) {
+			// Stop the speech synthesis
+			window.speechSynthesis.cancel();
+		}
+	};
 	const readAllUnreadEmails = async () => {
 		// Filter the unread emails
 		const unreadEmails = mails.filter(mail => mail.read === "false" && mail.tag === "inbox");
@@ -94,8 +101,11 @@ const MailDetail = ({
 					Move Email to Read List
 				</button>
 				<button onClick={() => window.location.reload()} style={{ marginLeft: '0px' }}> 
-				<RefreshIcon />Refresh MailList
+				<RefreshIcon />Refresh Page
 				</button>
+				<button onClick={stopReading}>
+            		<StopIcon />Stop Reading
+        		</button>
 				<button
  					 onClick={() => {
    					 speakText(selected.message);

@@ -1,46 +1,40 @@
 .maillist {
-  position: relative;
+  position: absolute;
   width: 250px;
-  height: auto;
+  height: 600px; 
   background-color: #eee;
+  overflow-y: auto; 
 }
 
-.buttons {
-  position: fixed;
-  padding-left: 10px;
-  width: 250px;
-  background-color: #eee;
+.selected {
+  background-color: #007BFF; 
+  color: white;
+  font-weight: bold;
+  width: 200px;  
   height: 40px;
-}
-
-.buttons button {
-  text-align: center;
-  border-top: none;
-  border-left: none;
-  border-right: none;
-  outline: 0;
-  width: 60px;
-  background: none;
-  height: 40px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
   cursor: pointer;
-  font-size: 12px;
+  transition: background-color 0.3s ease;
+}
+.buttonContainer {
+  display: flex;
+  justify-content: space-around;
+  width: 240px;  
+  height: 40px;
 }
 
 .button {
-  flex: 1;
-  padding: 8px;
-  font-size: 16px;
-  cursor: pointer;
-  border: none;
-  color: white;
-  background-color: red;
-  transition: background-color 0.3s;
+  width: 120px;  
+  height: 40px;  
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
 }
 
-.button:hover {
-  background-color: darkred;
-}
-
-.button.selected {
-  background-color: blue;
+.button svg {
+  font-size: 20px; 
 }

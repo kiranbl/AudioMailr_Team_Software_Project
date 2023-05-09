@@ -1,30 +1,25 @@
 body, html {
     margin: 0;
     padding: 0;
- }
-.sidebar_compose{
-    margin-top: 15px ! important;
-    margin-left: 50px !important;
-    margin-bottom: 15px ! important;
-    text-transform: capitalize ! important;
-    color: rgb(255, 255, 255) !important;
-    padding: 15px ! important;
-    border-radius: 30px !important;
-    box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.75);
-    background-color: #55B4EA !important;
 }
 
+.sidebar_compose {
+    margin: 15px 0px 15px 0px;
+    text-transform: capitalize;
+    color: rgb(255, 255, 255);
+    padding: 15px;
+    border-radius: 30px;
+    box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.75);
+    background-color: #55B4EA;
+    width:200px;
+}
 
-
-.sidebar{
+.sidebar {
 	padding-top:20px;
-	position: relative;
 	width:200px;
 	font-family: 'Muli', sans-serif;
-	>button{
-		position: relative;
-		left:50%;
-		transform:translate(-50%);
+
+	button {
 		text-align: center;
 		border-style: none;
 		outline: 0;
@@ -34,63 +29,52 @@ body, html {
 		color:#fff;
 		border-radius:2px;
 		margin-top:10px;
-		>i{
-			margin-right: 5px;
-		}
 	}
-	>ul{
+	
+	ul {
 		list-style: none;
-  		padding: 0;
-  		margin: 0;
+		padding: 0;
 		margin-top: 30px;
 		text-align: left;
-		list-style: none;
-		li{
+
+		li {
+			position: relative;
 			padding-left:30px;
-			margin:5px 0 5px 0;
+			margin:5px 0;
 			height: 40px;
 			line-height: 40px;
 			font-size:13px;
 			font-weight: 300;
 			color:#55B4EA;
 			cursor: pointer;
-			i{
-				margin-right: 8px;
-			}
-
 		}
 	}
 }
+
 .count {
-    position: absolute;
-    top: 50%; 
-    left: 50%; 
-    transform: translate(-50%, -50%);
-    font-size: 12px; 
+    padding: 5px 10px;
+    font-size: 14px;
     font-weight: bold;
-    color: white; 
+    color: rgb(255, 255, 255);
+    background-color: #55B4EA;
+    border-radius: 30px;
+    box-shadow: 0px 2px 5px -2px rgba(0, 0, 0, 0.75);
+    position: absolute;
+    right: 0;
+    bottom: 0;
 }
-.SidebarOption {
-	position: relative;
 
-}
-  
 
-.currentSection{
-	border-left: 5px #55B4EA;
-	&:after{
-			content: '';
-			background:linear-gradient(90deg, #55B4EA, #fff);
-			width:30px;
-			height:40px;
-			display: block;
-			position: relative;
-			left:-30px;
-			top:-40px;	
-			z-index:-1;
-			}
-			i,span{
-				color: black;
-				font-weight:800;
-			}
+
+.currentSection {
+	border-left: 5px solid #55B4EA;
+	color: black;
+	font-weight:800;
+
+	&:after {
+		background: linear-gradient(90deg, #55B4EA, #fff);
+		width:30px;
+		height:40px;
+		position: relative;
+	}
 }
