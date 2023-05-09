@@ -13,10 +13,13 @@ export default class HeaderNav extends Component {
                     <a className="nav-link active" aria-current="page" href="/">Main Entrance</a>
                 </li>
                 <li className="nav-item">
+                    <a className="nav-link active" aria-current="page" href="/receiveMail">Dashboard</a>
+                </li>
+                <li className="nav-item">
                     <a className="nav-link active" aria-current="page" href="/signup">Sign Up App Account</a>
                 </li>
                 <li className="nav-item">
-                    <a className="nav-link active" aria-current="page" href="/localsignin">Log in Prototype</a>
+                    <a className="nav-link active" aria-current="page" href="/localsignin">Log in App Account</a>
                 </li>
             </ul>
         </nav>
