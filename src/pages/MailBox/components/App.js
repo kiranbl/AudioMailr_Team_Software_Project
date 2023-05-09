@@ -15,6 +15,7 @@ import { Buffer } from 'buffer';
 import * as authActions from "../../../actions/auth";
 import * as flashActions from "../../../actions/flash";
 import { bindActionCreators } from "redux";
+import { htmlToText } from 'html-to-text';
 //decode function for gmail  base64 body
 function base64Decode(str) {
   try {
@@ -26,7 +27,6 @@ function base64Decode(str) {
 }
 //mailbox dashboard page and its components
 class Mailbox extends Component {
-   
   fetchEmails = async () => {
     try {
       const response = await api.fetchEmails();
@@ -38,23 +38,33 @@ class Mailbox extends Component {
           let decodedBody;
           // Check if the email is from Gmail or Outlook and decode accordingly
           if (email.toAddress.includes("@gmail.com")) {
-            // Decode base64 encoded body for Gmail
-            decodedBody = base64Decode(email.body);
+            // Check if the body looks like base64
+            if (/^[A-Za-z0-9+/=]+$/g.test(email.body)) {
+              // Decode base64 encoded body for Gmail
+              decodedBody = base64Decode(email.body);
+            } else {
+              // Use the original body
+              decodedBody = email.body;
+            }         
           } else if (email.toAddress.includes("@outlook.com")) {
-            // Use the HTML body directly for Outlook
-          //  decodedBody = extractTextFromHtml(email.body);
-          //} else {
+              // Check if the body looks like HTML
+            if (/<[^>]+>/g.test(email.body)) {
+              // Convert HTML to plain text
+              decodedBody = htmlToText(email.body);
+            } else {
+              // Use the original body
+              decodedBody = email.body;
+            }
+          } else {
             // For other cases, use the original body
             decodedBody = email.body;
           }
-  
           return {
             email_id: email.email_id,
             from: email.fromAddress,
             address: email.toAddress,
             time: email.createdAt,
             message: decodedBody,
-            //message: email.body,
             subject: email.subject,
             read: email.status === "read" ? "true" : "false",
             tag: "inbox",
@@ -125,7 +135,7 @@ class Mailbox extends Component {
       this.props.setEmails(mails);
     } else {
       // if no cookie, show some mock emails from local inox.json for functionalities
-      console.log('Failed fetching. Using local mails.');
+      console.log('Failed fetching.');
       console.log('display local mails:',MAILS.mails);
       this.props.setEmails(MAILS.mails);
     }
