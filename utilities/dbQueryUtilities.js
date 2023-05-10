@@ -1,5 +1,7 @@
+// queryBuilder function is defined to generate a dynamic mysql query based on the rules, data and querytype sent in the parameters
 var queryBuilder = (queryType,data)=>{
     
+    // Generating insert query 
     if(queryType === "insert"){
 
         var dataArray = Object.keys(data);
@@ -19,7 +21,7 @@ var queryBuilder = (queryType,data)=>{
         console.log("INSERT QUERY ===>>> ",query);
         return query;
     }
-
+    // Generating select query
     if(queryType === "select"){
 
         var dataArray = Object.keys(data.conditionData);
@@ -68,7 +70,7 @@ var queryBuilder = (queryType,data)=>{
         console.log("SELECT QUERY ===>>> ",query);
         return query;
     }
-
+    // Generating update query
     if(queryType ==="update"){
         console.log(data)
         var updateDataArray =  Object.keys(data.updationData);

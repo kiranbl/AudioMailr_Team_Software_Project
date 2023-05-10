@@ -2,8 +2,10 @@
 const dbQueryUtilities = require("../utilities/dbQueryUtilities");
 const dbUtilities = require("../utilities/dbUtilities");
 
+// function to get the sent mail data from database 
 let getSentEmail =async (data,bodyData)=>{
 try{
+    // for pagination which is not implemented yet
     let pagenumber = 0;
     if(bodyData.pagenumber){
         pagenumber= body.pagenumber;
@@ -38,8 +40,11 @@ console.log(error)
 
 }
 
+// function to get the inbox mail data from database
 let getInboxEmail = async (data,bodyData) =>{
     try{
+        
+        // for pagination which is not implemented yet
         let pagenumber = 0;
         if(bodyData.pagenumber){
             pagenumber= body.pagenumber;

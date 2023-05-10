@@ -8,10 +8,10 @@ var authenticationErrorCode = (statusCode)=>{
   }
 }
 
-
+//Function to gentate JWT with payload as data containg user data
 var generateJWT = async (data)=>{
 try{
-    var privateKey = "$$$$$$AUDIOMAILR123123123$$$$$$"
+    var privateKey = process.env.JWT_SECRET
     var token = jwt.sign(data, privateKey);
     return token;
 }
@@ -22,9 +22,10 @@ catch(err){
    
 }
 
+//Function to VERIFY JWT 
 var verifyJWT = async (token)=>{
     try{
-        var privateKey = "$$$$$$AUDIOMAILR123123123$$$$$$"
+        var privateKey = process.env.JWT_SECRET
         var decodedData = jwt.verify(token, privateKey);
         return decodedData;
       }
@@ -37,7 +38,7 @@ var verifyJWT = async (token)=>{
     }
 
 
-
+// Handler to check the request headers to check for the token in the headers and verify the token
 var authHandler = async (req,res,next)=>{
 
     const bearerHeader = req.headers['authorization'];

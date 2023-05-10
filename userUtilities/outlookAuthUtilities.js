@@ -26,15 +26,16 @@ const msalConfig = {
 };
 const msalClient = new msal.ConfidentialClientApplication(msalConfig);
 
+// Get the user details after authorizing through the consent screen
 let getOutlookUser = async (client,accessToken) => {
   try {
-    console.log(client);
+    //console.log(client);
     const outlookUser = await client
       .api("/me")
       .select("displayName,mail,mailboxSettings,userPrincipalName,photo")
       .get();
 
-    console.log(JSON.stringify(outlookUser));
+    //console.log(JSON.stringify(outlookUser));
     var data = {
       conditionData: {
         emailAddress2: outlookUser.userPrincipalName,
@@ -45,12 +46,13 @@ let getOutlookUser = async (client,accessToken) => {
       tablename: "user",
     };
 
+    // Checking if the user already stored in the database 
     let selectQuery = `Select `;
     let generatedSelectQuery = dbQueryUtilities.queryBuilder("select", data);
     selectQuery = selectQuery + generatedSelectQuery;
 
     var selectQueryResponse = await dbUtilities.selectQuery(selectQuery);
-    console.log("Select Query res", selectQueryResponse);
+    //console.log("Select Query res", selectQueryResponse);
 
     let user = {
       userName: outlookUser.displayName,
@@ -58,6 +60,8 @@ let getOutlookUser = async (client,accessToken) => {
       password1: outlookUser.id,
       createdAt:MOMENT().format( 'YYYY-MM-DD  HH:mm:ss.000' )
     };
+
+    // If the user already exist in the database just generate the JWT
     if (selectQueryResponse && selectQueryResponse.length > 0) {
       let existingUser = {
         userName: outlookUser.givenName,
@@ -72,14 +76,14 @@ let getOutlookUser = async (client,accessToken) => {
       console.log({ token: token });
 
       return { emailaddress:outlookUser.userPrincipalName,token: token };
-    } else {
+    } else { // If the user is new ,create a new record in the database and generate the JWT
       let insertquery = `INSERT INTO user `;
       let insertqueryType = "insert";
       let generatedQuery = dbQueryUtilities.queryBuilder(insertqueryType, user);
       insertquery = insertquery + generatedQuery;
 
       var queryResponse = await dbUtilities.createQuery(insertquery);
-      console.log("Query res", queryResponse);
+      //console.log("Query res", queryResponse);
       if (queryResponse.errorcode) {
         return signUpErrorCode(2001);
       } else {
@@ -105,7 +109,7 @@ var getOutlookAuthCode = async (req, res) => {
   if (!req.query.code) {
     return;
   }
-  console.log(JSON.stringify(req.query));
+  //console.log(JSON.stringify(req.query));
   const scopes = process.env.OUTLOOK_SCOPES || "https://graph.microsoft.com/.default";
   const tokenRequest = {
     code: req.query.code,
@@ -113,22 +117,23 @@ var getOutlookAuthCode = async (req, res) => {
     redirectUri: process.env.OUTLOOK_REDIRECT_URI,
   };
   const response = await msalClient.acquireTokenByCode(tokenRequest);
-  console.log("Outlook Token Response",response);
+  //console.log("Outlook Token Response",response);
   const client = getAuthenticatedClient(
     msalClient,
     response.account.homeAccountId
   );
   let getUser = await getOutlookUser(client,response.accessToken);
-  //return getUser;
-
-  res.cookie("AUDIOMAILR_JWT", getUser, {
-    maxAge: 90000,
-    httpOnly: false,
-    secure: false,
+  
+  // Setting the cookie containing the JWT token and email of the user and is set to expire by 24 hours from the time it was created
+  res.cookie("AUDIOMAILR_JWT", getUser, 
+  {
+    maxAge: 24 * 60 * 60 * 1000,
+    httpOnly: false,//changed this to false because js does not agree with httpOnly at all 
+    secure: process.env.NODE_ENV === 'production', //secure: false, Set 'secure' to true only in production 
+    sameSite: 'strict', // This attribute helps to prevent CSRF attacks
+    path: '/', // The path attribute should be set to '/' so that the cookie is accessible on all pages
   });
-
   res.redirect("http://localhost:3001/mailbox");
-  //return res.json(getUser);
 };
 
 var getAuthenticatedClient = (msalClient, userId) => {
