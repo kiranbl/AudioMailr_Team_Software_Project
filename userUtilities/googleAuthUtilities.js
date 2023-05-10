@@ -55,7 +55,7 @@ let getGoogleUser = async (code)=> {
       selectQuery = selectQuery + generatedSelectQuery;
   
       var selectQueryResponse = await dbUtilities.selectQuery(selectQuery);
-      console.log("Select Query res", selectQueryResponse);
+      //console.log("Select Query res", selectQueryResponse);
       
       let user = {
         userName: googleUser.data.name,

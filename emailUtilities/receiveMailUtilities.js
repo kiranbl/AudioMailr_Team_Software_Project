@@ -18,10 +18,9 @@ let getSavedUnreadMail =async (data)=>{
 
   var existingemailids = {
     conditionData: {
-     user_id: data.user_id,
-     status: "unread",
+     user_id: data.user_id
     },
-    conditionType: 'AND',
+    conditionType: 'OR',
     selectionData: ["email_id"],
     tablename: "inbox",
   };
@@ -31,7 +30,7 @@ let getSavedUnreadMail =async (data)=>{
   selectQuery = selectQuery + generatedSelectQuery;
 
   var selectQueryResponse = await dbUtilities.selectQuery(selectQuery);
-  console.log("Select Query res", selectQueryResponse);
+  //console.log("Select Query res", selectQueryResponse);
   return selectQueryResponse;
 
   
@@ -181,7 +180,7 @@ let storeOutlookMailData = async (accessToken,data,unreadMessagesID)=>{
           insertquery = insertquery + generatedQuery;
           
           var queryResponse = await dbUtilities.createQuery(insertquery);
-          console.log("Query res", queryResponse);
+          //console.log("Query res", queryResponse);
           if (queryResponse.errorcode) {
             return queryResponse;
           }

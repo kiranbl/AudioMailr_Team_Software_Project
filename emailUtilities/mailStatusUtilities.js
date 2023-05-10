@@ -28,9 +28,9 @@ try{
 
       let generatedUpdateQuery = dbQueryUtilities.queryBuilder("update", getMailData);
       updateQuery = updateQuery + generatedUpdateQuery;
-      console.log(updateQuery)
+      //console.log(updateQuery)
       var updateQueryResponse = await dbUtilities.updateQuery(updateQuery);
-      console.log("Update Query res", updateQueryResponse);
+      //console.log("Update Query res", updateQueryResponse);
       return updateQueryResponse;
     }
 
@@ -43,9 +43,9 @@ console.log(error)
 
 // Handler to set the email status and update the database
 let setMailStatusHandler = async (req,res)=>{
-    console.log(req.decodedData)
-    if (!req.body) {
-        res.status(400).json({
+    //console.log(req.body)
+    if (!Object.keys(req.body).length) {
+        return res.status(400).json({
           statusCode: 400,
           message: "Content can not be empty!",
         });

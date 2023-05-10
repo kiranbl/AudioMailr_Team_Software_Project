@@ -57,7 +57,7 @@ var authHandler = async (req,res,next)=>{
         res.json(data);
       }
       else{
-        console.log(data);
+        //console.log(data);
         req["decodedData"]= data;
         next();
       }

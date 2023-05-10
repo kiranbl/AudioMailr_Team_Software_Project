@@ -4,9 +4,9 @@ const {outlookAuthHandler} = require("./outlookAuthUtilities");
 
 
 var signUpHandler = async (req, res) => {
-  console.log("Reached here");
-  if (!req.body) {
-    res.status(400).json({
+  //console.log("Reached here");
+  if (!Object.keys(req.body).length) {
+    return res.status(400).json({
       statusCode: 400,
       message: "Content can not be empty!",
     });

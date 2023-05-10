@@ -103,7 +103,7 @@ let transportMail = async (data,emailTemplate) =>{
 //Function to send email and storing the sent mail in the database
 let sendEmail = async (data,emailTemplate) =>{
     try{
-      console.log(data)
+      //console.log(data)
       let transporterResponse = await transportMail(data,emailTemplate);
 
       
@@ -118,7 +118,7 @@ let sendEmail = async (data,emailTemplate) =>{
         let generatedQuery = dbQueryUtilities.queryBuilder(insertqueryType, emailTemplate);
         insertquery = insertquery + generatedQuery;
         var queryResponse = await dbUtilities.createQuery(insertquery);
-        console.log("Query res", queryResponse);
+        //console.log("Query res", queryResponse);
         if(queryResponse.errorcode) return queryResponse
 
         return(sendMailErrorCode(6000,emailTemplate.toAddress));
@@ -135,11 +135,11 @@ let sendEmail = async (data,emailTemplate) =>{
 
 // Handler to send the email and storing the data in the database
 let sendMailHandler = async (req,res)=>{
-    console.log(req.decodedData)
-    if (!req.body) {
-        res.status(400).json({
+  //console.log("Body",req.body)
+    if (!Object.keys(req.body).length) {
+       return res.status(400).json({
           statusCode: 400,
-          message: "Content can not be empty!",
+          message: "Body can not be empty!",
         });
   }else {
     // Calling the emailValidator to validate the body containing mail data to be sent

@@ -195,7 +195,7 @@ var getOutlookAuthURL = async (req, res) => {
       redirectUri: process.env.OUTLOOK_REDIRECT_URI,
       scopes: scopes.split(","),
     });
-    console.log(`authurl: ${authurl}`);
+    //console.log(`authurl: ${authurl}`);
     return authurl;
   } catch (error) {
     console.log(`Error: ${error}`);
@@ -203,9 +203,9 @@ var getOutlookAuthURL = async (req, res) => {
 };
 
 var outlookAuthHandler = async () => {
-  console.log("Reached here");
+  //console.log("Reached here");
   let data = { url: await getOutlookAuthURL() };
-  console.log("====>" + JSON.stringify(data));
+  //console.log("====>" + JSON.stringify(data));
   return data;
 };
 

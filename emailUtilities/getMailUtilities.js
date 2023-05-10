@@ -30,7 +30,7 @@ try{
       selectQuery = selectQuery + generatedSelectQuery;
   
       var selectQueryResponse = await dbUtilities.selectQuery(selectQuery);
-      console.log("Select Query res", selectQueryResponse);
+      //console.log("Select Query res", selectQueryResponse);
       return selectQueryResponse;
     }
 
@@ -43,7 +43,7 @@ console.log(error)
 // function to get the inbox mail data from database
 let getInboxEmail = async (data,bodyData) =>{
     try{
-        
+
         // for pagination which is not implemented yet
         let pagenumber = 0;
         if(bodyData.pagenumber){
@@ -69,7 +69,7 @@ let getInboxEmail = async (data,bodyData) =>{
           selectQuery = selectQuery + generatedSelectQuery;
       
           var selectQueryResponse = await dbUtilities.selectQuery(selectQuery);
-          console.log("Select Query res", selectQueryResponse);
+          //console.log("Select Query res", selectQueryResponse);
           return selectQueryResponse;
         }
     catch(error){

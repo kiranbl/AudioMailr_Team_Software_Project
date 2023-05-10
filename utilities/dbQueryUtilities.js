@@ -18,7 +18,7 @@ var queryBuilder = (queryType,data)=>{
         }
         
         var query = `(${key}) VALUES ( ${value})`;
-        console.log("INSERT QUERY ===>>> ",query);
+        //console.log("INSERT QUERY ===>>> ",query);
         return query;
     }
     // Generating select query
@@ -61,18 +61,18 @@ var queryBuilder = (queryType,data)=>{
 
         let limitQuery="";
         if(data.limitCondition){
-            console.log("limit")
+            //console.log("limit")
             limitQuery = limitQuery+"LIMIT " + `${data.limitCondition.startRow}, ${data.limitCondition.count}`;
         }
       
         
         var query = `${selectionQuery} FROM ${data.tablename} WHERE ${conditionQuery}) ${orderQuery} ${limitQuery}`;
-        console.log("SELECT QUERY ===>>> ",query);
+        //console.log("SELECT QUERY ===>>> ",query);
         return query;
     }
     // Generating update query
     if(queryType ==="update"){
-        console.log(data)
+        //console.log(data)
         var updateDataArray =  Object.keys(data.updationData);
         var dataArray = Object.keys(data.conditionData);
         var conditionType = data.conditionType? data.conditionType:"AND";
@@ -102,7 +102,7 @@ var queryBuilder = (queryType,data)=>{
         }
         
         var query = `${data.tablename} SET ${updationQuery} WHERE ${conditionQuery} `;
-        console.log("UPDATE QUERY ===>>> ",query);
+        //console.log("UPDATE QUERY ===>>> ",query);
         return query;
 
     }
