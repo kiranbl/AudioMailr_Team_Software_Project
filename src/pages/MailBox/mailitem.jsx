@@ -1,7 +1,7 @@
 import React from 'react';
 import { getprettytime } from './utils/timeutils';
 import styles from "./css/maillist.css";
-
+//functions to handle long email addresses & subjects to keep the Emaillist steady
 const addFormat = (address) => {
   const len = address.length;
   if (len < 20) {
@@ -18,7 +18,7 @@ const addSubjectFormat = (subject) => {
     return subject.slice(0, 17) + '...';
   }
 };
-
+//form of each item in Emaillist
 const MailItem = ({ selectedEmailID, mail, openmail }) => {
   const display = mail.read === 'false' ? 'inline-block' : 'none';
   return (

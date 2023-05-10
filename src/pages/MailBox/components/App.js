@@ -27,6 +27,7 @@ function base64Decode(str) {
 }
 //mailbox dashboard page and its components
 class Mailbox extends Component {
+  //pull emails by sending api call to server
   fetchEmails = async () => {
     try {
       const response = await api.fetchEmails();
@@ -37,7 +38,10 @@ class Mailbox extends Component {
         const transformedEmails = response.data.map((email) => {
           let decodedBody;
           // Check if the email is from Gmail or Outlook and decode accordingly
-          if (email.toAddress.includes("@gmail.com")) {
+          if (email.fromAddress.includes("no-reply")) {
+            // Replace the email's message with a custom message
+            decodedBody = "This app does not support Providers' 'no-reply' format.";
+          } else if (email.toAddress.includes("@gmail.com")) {
             // Check if the body looks like base64
             if (/^[A-Za-z0-9+/=]+$/g.test(email.body)) {
               // Decode base64 encoded body for Gmail
@@ -78,7 +82,8 @@ class Mailbox extends Component {
       console.error('Error fetching emails:', error);
     }
   };
-  
+
+  // pull sent emails by sending api call to server
   fetchSentEmails = async () => {
     try {
       const response = await api.fetchSentEmails();

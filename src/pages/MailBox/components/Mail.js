@@ -90,14 +90,12 @@ const MailDetail = ({
 				<p></p>
 				<p>Message:</p>
 				<div className={styles.mail__message}>
-					{
-						selected.from.includes("no-reply") 
-						? "Our app cannot handle Providers' 'no-reply' format"
-						: selected.message.split(' ').length > "THE LENGTH OF THE MESSAGE MUST NOT BE LONGER THAN THIS SENTENCE OR IT WILL CAUSE STYLE ISSUES".split(' ').length
-						? selected.message.split(' ').map((item, i) => <span key={i}>{item}<br/></span>)
-						: selected.message
-					}
-					<p></p>
+				{
+					selected.message.split(' ').length > "THE LENGTH OF THE MESSAGE MUST NOT BE LONGER THAN THIS SENTENCE OR IT WILL CAUSE STYLE ISSUES".split(' ').length
+					? selected.message.split(' ').map((item, i) => <span key={i}>{item}<br/></span>)
+					: selected.message
+				}
+				<p></p>
 				</div>
         		<hr />
 				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>

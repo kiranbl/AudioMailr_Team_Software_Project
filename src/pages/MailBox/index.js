@@ -1,10 +1,10 @@
+// Main entrance of app, includes all routes
 import React, { Component } from "react";
 import {
   BrowserRouter as Router,
   Route,
   Routes,
 } from "react-router-dom";
-import Mailbox from "../pages/MailBox/components/App.js";
 import VAPP from "../pages/MailBox/containers/vmailbox.jsx";
 import configureStore from "../pages/MailBox/app/configureStore";
 import SignUpPage from "../pages/SignUp/SignUpPage";
