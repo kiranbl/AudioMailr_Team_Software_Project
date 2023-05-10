@@ -10,7 +10,20 @@ const firebaseConfig = {
   messagingSenderId: "801207008698",
   appId: "1:801207008698:web:649ddd92c31df7798bb183"
 };
-
+//notification check
+async function notifyUser() {
+  if (!("Notification" in window)) {
+    console.log("This browser does not support system notifications.");
+  } else if (Notification.permission === "granted") {
+    new Notification("Reading mail...");
+  } else if (Notification.permission !== "denied") {
+    Notification.requestPermission().then(function (permission) {
+      if (permission === "granted") {
+        new Notification("Reading mail...");
+      }
+    });
+  }
+}
 const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
@@ -53,7 +66,7 @@ const TimeStorage = ({ readAllUnreadEmails }) => {
 
         if (ukTime.slice(0, 5) === savedTime) {
           console.log("Time matched!");
-          alert("Reading mail...");
+          notifyUser();
           readAllUnreadEmails();
           setEmailsRead(true);
         }
