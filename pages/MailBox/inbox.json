@@ -1,0 +1,58 @@
+{
+  "mails": [
+    {
+      "from": "Team 12",
+      "address": "audiomailr",
+      "time": "2023-5-07 15:35:14",
+      "message": "Offline prototype is shown.",
+      "subject": "You are offline",
+      "tag": "inbox",
+      "read": "false"
+    },
+    {
+      "from": "David",
+      "address": "fishbowl@slack.com",
+      "time": "2022-07-21 09:47:57",
+      "message": "Come and play. ",
+      "subject": "English text sample ",
+      "tag": "inbox",
+      "read": "false"
+    },
+    {
+      "from": "Kanon",
+      "address": "kanno@gmail.com",
+      "time": "2022-05-09 14:23:54",
+      "message": "遊びに来てくれてありがとう! ",
+      "subject": "Japanese text sample ",
+      "tag": "inbox",
+      "read": "false"
+    },
+    {
+      "from": "Zhiyin",
+      "address": "caixukun@qq.com",
+      "time": "2022-07-03 21:48:27",
+      "message": "我喜欢唱跳篮球和rap！",
+      "subject": "Mandarin text sample ",
+      "tag": "inbox",
+      "read": "false"
+    },
+    {
+      "from": "Ray Lamb",
+      "address": "ut.erat.Sed@volutpatNulla.co.uk",
+      "time": "2022-01-08 10:14:40",
+      "message": "Trepalium is going on tour! ",
+      "subject": "Concert tickets on sale",
+      "tag": "inbox",
+      "read": "true"
+    },
+    {
+      "from": "Uos",
+      "address": "team12project@gmail.com",
+      "time": "2022-07-21 09:47:57",
+      "message": "this is local sent email. ",
+      "subject": "Sent email sample",
+      "tag": "sent",
+      "read": "true"
+    }
+  ]
+}

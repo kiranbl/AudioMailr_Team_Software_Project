@@ -1,0 +1,26 @@
+body, html {
+    margin: 0;
+    padding: 0;
+ }
+ .sidebarOption{
+  
+    position: relative;
+    display: flex;
+    align-items: center;
+    height: 40px;
+    padding: 0 10px;
+    margin-top: 10px;
+    margin-left: 50px;
+    cursor: pointer;
+    color: rgba(0,0,0,0.5);
+}
+ul{
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+.sidebarOption:hover,
+.sidebarOption:hover > h3 {
+    background-color: #55B4EA;
+}
