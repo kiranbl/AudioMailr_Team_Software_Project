@@ -14,11 +14,11 @@ const mapStateToProps = (state) => {
 
 const mapDispatchToProps = (dispatch) => {
 	return {
-	  handleCompose: (toAddress, toMessage, toSubject, token) => {
+	  handleCompose: (toAddress, toSubject, toMessage,token) => {
 		console.log('Sending email with data:', {
 		  toAddress,
-		  toMessage,
 		  toSubject,
+		  toMessage,
 		  token,
 		});
 		dispatch(api.sendEmails(toAddress, toMessage, toSubject, token));
