@@ -3,7 +3,11 @@
     width: 600px;
     height: 1000px; 
     background-color: #eee;
+    overflow-y: auto;
     overflow-y: auto; /* Add a scrollbar when content height exceeds the container height */
+    margin-left: 40px;
+    padding: 10px;
+    border: 1px solid #ccc;
 }
 .mail {
     flex: 1;
@@ -52,12 +56,10 @@
 
 .mail__message {
     height: 200px; 
-    /* add a scrollbar when the content height exceeds the container height */
     overflow-y: auto; 
     padding: 10px;
     margin-right: 20px;
     overflow-wrap: break-word;
-    /* add a border to make it look like a text field */
     border: 1px solid #ccc; 
   }
   

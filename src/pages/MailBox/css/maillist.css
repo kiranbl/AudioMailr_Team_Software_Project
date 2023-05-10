@@ -5,6 +5,18 @@
   background-color: #eee;
   overflow-y: auto; 
 }
+.mailitem {
+  width: 300px;
+  height: 100px;
+  overflow: hidden; 
+}
+
+.selecteditem {
+  width: 300px;
+  height: 100px;
+  overflow: hidden;
+}
+
 
 .selected {
   background-color: #007BFF; 

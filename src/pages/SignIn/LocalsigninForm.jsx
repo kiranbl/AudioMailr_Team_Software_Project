@@ -1,3 +1,4 @@
+//sign up app account
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import validator from '../../utils/validator';

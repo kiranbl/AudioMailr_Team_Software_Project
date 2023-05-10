@@ -87,9 +87,19 @@ const MailDetail = ({
 				<p className={styles.address}>Received by: {selected.address}</p>
 				<p className={styles.subject}>Title: {selected.subject}</p>
 				<span>Time: {getprettytime(selected.time)}</span>
-				<div >
-					{selected.message}
+				<p></p>
+				<p>Message:</p>
+				<div className={styles.mail__message}>
+					{
+						selected.from.includes("no-reply") 
+						? "Our app cannot handle Providers' 'no-reply' format"
+						: selected.message.split(' ').length > "THE LENGTH OF THE MESSAGE MUST NOT BE LONGER THAN THIS SENTENCE OR IT WILL CAUSE STYLE ISSUES".split(' ').length
+						? selected.message.split(' ').map((item, i) => <span key={i}>{item}<br/></span>)
+						: selected.message
+					}
+					<p></p>
 				</div>
+        		<hr />
 				<div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start' }}>
 				<button onClick={() => {
 					console.log('selected Email:',selected);
@@ -108,7 +118,8 @@ const MailDetail = ({
         		</button>
 				<button
  					 onClick={() => {
-   					 speakText(selected.message);
+   					 //speakText(selected.message);
+					 speakText(`"from".${selected.from}}."to".${selected.address}."subjust".${selected.subject}."Message". ${selected.message}`);
   					}}
 				>
   				<VolumeUpIcon />

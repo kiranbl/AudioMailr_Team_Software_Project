@@ -122,9 +122,11 @@ var getOutlookAuthCode = async (req, res) => {
   //return getUser;
 
   res.cookie("AUDIOMAILR_JWT", getUser, {
-    maxAge: 90000,
+    maxAge: 86400000,
     httpOnly: false,//changed this to false because js does not agree with httpOnly at all 
-    secure: false,
+    secure: process.env.NODE_ENV === 'production', //secure: false, Set 'secure' to true only in production 
+    sameSite: 'strict', // This attribute helps to prevent CSRF attacks
+    path: '/', // The path attribute should be set to '/' so that the cookie is accessible on all pages
   });
 
   res.redirect("http://localhost:3001/receiveMail");

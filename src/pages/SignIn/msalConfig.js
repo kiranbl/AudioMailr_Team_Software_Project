@@ -1,10 +1,9 @@
-
-
+// local config file for outlook, created for front end testing, now no needed since code about it is on server side with .env config
 const msalConfig = {
   auth: {
-    clientId: "36c7e600-d3ba-490b-abd9-2d666495118c", // Replace with your actual client ID
+    clientId: "36c7e600-d3ba-490b-abd9-2d666495118c", 
     authority: "https://login.microsoftonline.com/common",
-    redirectUri: "http://localhost:3000/signup/outlookoauth", // Replace with your app's redirect URL
+    redirectUri: "http://localhost:3000/signup/outlookoauth",
   },
   cache: {
     cacheLocation: "localStorage",
