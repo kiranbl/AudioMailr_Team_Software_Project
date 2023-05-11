@@ -127,7 +127,7 @@ var getGoogleAuthCode = async (req,res)=>{
     sameSite: 'strict', // This attribute helps to prevent CSRF attacks
     path: '/', // The path attribute should be set to '/' so that the cookie is accessible on all pages
   });
-  res.redirect("http://localhost:3001/mailbox");
+  res.redirect("http://localhost:3001/receiveMail");
 }
 
 // Function to generate the google OAuth URL using the google apis

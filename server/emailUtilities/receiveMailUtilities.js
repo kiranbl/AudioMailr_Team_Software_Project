@@ -69,7 +69,7 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
       // if(emailData.response.status === 401){
       //   return(receiveMailErrorCode(7001))
       // }
-      //console.log(emailData)
+      console.log(emailData.data.payload.headers)
        
       // Creating a json object to structure the mail data returned from the request
       let obj = {
@@ -89,6 +89,12 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
         }
         else if(h.name==="To"){
           obj["toAddress"] = h.value.toString().replace(/"/g, '').replace(/'/g,'');
+        }
+        else if( h.name==="Delivered-To"){
+          obj["toAddress"] = h.value.toString().replace(/"/g, '').replace(/'/g,'');
+        }
+        else{
+          obj["toAddress"] = data.emailAddress1;
         }
 
         
@@ -117,7 +123,7 @@ let storeGmailData = async (accessToken,data,unreadMessagesID)=>{
       obj["user_id"] = data.user_id;
       obj["status"] = "unread";
       
-      //console.log("DATA",obj)
+      console.log("DATA",obj)
 
       //Inserting the mail data to the database by creating the query 
       let insertquery = `INSERT INTO inbox `;

@@ -133,7 +133,7 @@ var getOutlookAuthCode = async (req, res) => {
     sameSite: 'strict', // This attribute helps to prevent CSRF attacks
     path: '/', // The path attribute should be set to '/' so that the cookie is accessible on all pages
   });
-  res.redirect("http://localhost:3001/mailbox");
+  res.redirect("http://localhost:3001/receiveMail");
 };
 
 var getAuthenticatedClient = (msalClient, userId) => {
