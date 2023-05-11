@@ -1,3 +1,4 @@
+// Getting the pool connection
 const pool = require("../config/dbconfig");
 
 var databaseErrorCode = (statusCode)=>{
@@ -9,12 +10,12 @@ var databaseErrorCode = (statusCode)=>{
     }
 }
 
-
+// Running the selet query and returning the data
 var selectQuery = async (query)=>{
 try{
     var [rows,fields] = await pool.query(query);
-    console.log(rows)
-    console.log(fields);
+    //console.log(rows)
+    //console.log(fields);
     return rows;
 //     pool.getConnection((err,connection)=>{
 //         if(err) throw err;
@@ -33,13 +34,13 @@ catch(error){
 
 } 
 
-
+// Running the insert query and returning the data
 var createQuery =async (query)=>{
     try{
         
         var [rows,fields] = await pool.query(query);
-        console.log(rows)
-        console.log(fields);
+        //console.log(rows)
+        //console.log(fields);
         return rows;
     //     pool.getConnection((err,connection)=>{
     //         if(err) throw err;
@@ -59,12 +60,13 @@ var createQuery =async (query)=>{
     
   }
   
-  var updateQuery =async (query)=>{
+// Running the update query and returning the data
+var updateQuery =async (query)=>{
     try{
         
         var [rows,fields] = await pool.query(query);
-        console.log(rows)
-        console.log(fields);
+        //console.log(rows)
+        //console.log(fields);
         return rows;
     //     pool.getConnection((err,connection)=>{
     //         if(err) throw err;
@@ -82,7 +84,7 @@ var createQuery =async (query)=>{
     }
  
     
-  }
+}
  
  
 

@@ -8,13 +8,11 @@ var authenticationErrorCode = (statusCode)=>{
   }
 }
 
-
+//Function to gentate JWT with payload as data containg user data
 var generateJWT = async (data)=>{
 try{
-    var privateKey = "$$$$$$AUDIOMAILR123123123$$$$$$"
-    var token = jwt.sign(data, privateKey,{ expiresIn: '1h'} );
-    console.log("data:",data);
-    console.log("token:",token);
+    var privateKey = process.env.JWT_SECRET
+    var token = jwt.sign(data, privateKey);
     return token;
 }
 catch(err){
@@ -24,11 +22,11 @@ catch(err){
    
 }
 
+//Function to VERIFY JWT 
 var verifyJWT = async (token)=>{
     try{
-        var privateKey = "$$$$$$AUDIOMAILR123123123$$$$$$"
+        var privateKey = process.env.JWT_SECRET
         var decodedData = jwt.verify(token, privateKey);
-        console.log("decodedData:",decodedData);
         return decodedData;
       }
     catch(err){
@@ -40,11 +38,10 @@ var verifyJWT = async (token)=>{
     }
 
 
-
+// Handler to check the request headers to check for the token in the headers and verify the token
 var authHandler = async (req,res,next)=>{
 
     const bearerHeader = req.headers['authorization'];
-    console.log("bearerHeader:", bearerHeader); // Add this log statement
     // Check if bearer is undefined
     if(typeof bearerHeader !== 'undefined') {
       // Split at the space
@@ -60,7 +57,7 @@ var authHandler = async (req,res,next)=>{
         res.json(data);
       }
       else{
-        console.log(data);
+        //console.log(data);
         req["decodedData"]= data;
         next();
       }
